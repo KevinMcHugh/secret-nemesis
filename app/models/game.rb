@@ -1,13 +1,8 @@
 class Game
   attr_reader :players, :random, :seed
   def initialize(brain_classes, seed=nil)
-    if seed #this is just for deterministic testing
-      @seed = seed
-      @random = Random.new(seed)
-    else
-      @random = Random.new
-      @seed = random.seed
-    end
+    @seed = seed ? seed : Random.new.seed #this is just for deterministic testing
+    @random = Random.new(seed)
     roles = roles_for(brain_classes.size)
     @players = brain_classes.each_with_index.map do |bc, i|
       role = roles[i]
@@ -16,8 +11,10 @@ class Game
   end
 
   def play
-
-
+    spies.map do |spy|
+      spy.open_eyes(spies)
+    end
+    leader = @players.first
   end
 
   def self.all_roles
@@ -28,5 +25,9 @@ class Game
   private
   def roles_for(players)
     self.class.all_roles[0..players - 1].shuffle(random: random)
+  end
+
+  def spies
+    @spies ||= players.find_all(&:spy?)
   end
 end
