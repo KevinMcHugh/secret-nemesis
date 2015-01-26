@@ -25,11 +25,33 @@ describe Game do
   end
 
   describe '#play' do
+    let(:mission) { double('Mission', winning_team: 'spy', leader: double(next: player2))}
+
+    before do
+      allow(brain_class_1).to receive(:new).and_return(brain1, brain3)
+      allow(brain_class_2).to receive(:new).and_return(brain2, brain4)
+      allow(subject.players.second).to receive(:open_eyes).with([player2, player3])
+      allow(subject.players.third).to receive(:open_eyes).with([player2, player3])
+      allow(Mission).to receive(:new).exactly(3).times.and_return(mission)
+    end
+
     it 'reveals the spies to each other' do
-      expect(brain_class_1).to receive(:new).and_return(brain1, brain3)
-      expect(brain_class_2).to receive(:new).and_return(brain2, brain4)
       expect(subject.players.second).to receive(:open_eyes).with([player2, player3])
       expect(subject.players.third).to receive(:open_eyes).with([player2, player3])
+      subject.play
+    end
+
+    it 'creates new missions until one team wins 3 times' do
+      expect(Mission).to receive(:new).exactly(3).times.and_return(mission)
+      subject.play
+      expect(subject.winning_team).to eql('spy')
+    end
+
+    it 'creates new missions with the correct leader' do
+      expect(mission).to receive(:leader).and_return(double(next: player2), double(next: player3))
+      expect(Mission).to receive(:new).ordered.with(player1, anything).and_return(mission)
+      expect(Mission).to receive(:new).ordered.with(player2, anything).and_return(mission)
+      expect(Mission).to receive(:new).ordered.with(player3, anything).and_return(mission)
       subject.play
     end
   end

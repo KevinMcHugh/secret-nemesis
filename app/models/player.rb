@@ -16,6 +16,11 @@ class Player
     brain.open_eyes(others)
   end
 
+  def next; nil; end
+  def vote(team); nil; end
+  def pick_team; nil; end
+  def pass_mission?; nil; end
+
   def ==(other)
     brain == other.brain && role == other.role
   end
