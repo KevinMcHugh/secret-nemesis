@@ -48,6 +48,18 @@ describe Mission do
         expect(player2).to receive(:vote).with(players).and_return(false, true)
         subject.play
       end
+
+      context 'the vote fails 5 times' do
+        it 'the game is over' do
+          expect(player2).to receive(:pick_team).exactly(2).times.and_return(players)
+          expect(player1).to receive(:next).exactly(2).times.and_return(player2)
+          expect(player2).to receive(:next).exactly(2).times.and_return(player1)
+          expect(player1).to receive(:vote).with(players).exactly(5).times.and_return(false)
+          expect(player2).to receive(:vote).with(players).exactly(5).times.and_return(false)
+          subject.play
+          expect(subject.game_over?).to be_true
+        end
+      end
     end
   end
 end
