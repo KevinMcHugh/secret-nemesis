@@ -16,6 +16,10 @@ class Player
     brain.open_eyes(others)
   end
 
+  def show_player_votes(players_to_votes)
+    brain.show_player_votes(players_to_votes)
+  end
+
   def next; nil; end
   def vote(team); nil; end
   def pick_team; nil; end

@@ -32,10 +32,15 @@ class Mission
 
   private
   def vote(team)
-    votes = players.map { |p| p.vote(team) }
+    players_to_votes = {}
+    players.each do |player|
+      players_to_votes[player] = player.vote(team)
+    end
+    votes = players_to_votes.values
     grouped_votes = votes.group_by { |v| v }
     approve_votes    = grouped_votes[true].try(:count)  || 0
     disapprove_votes = grouped_votes[false].try(:count) || 0
+    players.each { |p| p.show_player_votes(players_to_votes) }
     approve_votes > disapprove_votes
   end
 end
