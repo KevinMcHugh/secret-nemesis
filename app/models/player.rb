@@ -16,16 +16,12 @@ class Player
     brain.open_eyes(others)
   end
 
-  # def show_player_votes(players_to_votes)
-  #   brain.show_player_votes(players_to_votes)
-  # end
-
   delegate :vote, to: :brain
   delegate :pick_team, to: :brain
   delegate :show_player_votes, to: :brain
+  delegate :pass_mission?, to: :brain
 
   def next; nil; end
-  def pass_mission?; nil; end
 
   def ==(other)
     brain == other.brain && role == other.role

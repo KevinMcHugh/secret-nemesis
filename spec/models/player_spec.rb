@@ -53,4 +53,12 @@ describe Player do
       subject
     end
   end
+
+  describe '#pass_mission?' do
+    subject { player1.pass_mission? }
+    it 'passes the request to the brain' do
+      expect(brain1).to receive(:pass_mission?)
+      subject
+    end
+  end
 end

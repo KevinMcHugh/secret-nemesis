@@ -1,8 +1,8 @@
 require 'spec_helper'
 
 describe Mission do
-  let(:brain1) { double('brain1', show_player_votes: nil)}
-  let(:brain2) { double('brain2', show_player_votes: nil)}
+  let(:brain1) { double('brain1', show_player_votes: nil, pass_mission?: nil)}
+  let(:brain2) { double('brain2', show_player_votes: nil, pass_mission?: nil)}
   let(:player1) { Player.new(brain1, nil)}
   let(:player2) { Player.new(brain2, nil)}
   let(:players) { [player1, player2]}
