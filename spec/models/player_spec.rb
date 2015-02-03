@@ -21,4 +21,12 @@ describe Player do
       subject
     end
   end
+
+  describe '#vote' do
+    subject { player1.vote([player1, player2])}
+    it 'passes the team to the brain' do
+      expect(brain1).to receive(:vote).with([player1, player2])
+      subject
+    end
+  end
 end
