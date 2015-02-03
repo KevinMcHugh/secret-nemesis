@@ -45,4 +45,12 @@ describe Player do
       end
     end
   end
+
+  describe '#pick_team' do
+    subject { player1.pick_team }
+    it 'passes the request to the brain' do
+      expect(brain1).to receive(:pick_team)
+      subject
+    end
+  end
 end
