@@ -4,7 +4,7 @@ describe Player do
   let(:brain1)  { double('brain1') }
   let(:brain2)  { double('brain2') }
   let(:player1) { Player.new(brain1, 'spy')}
-  let(:player2) { Player.new(brain2, 'spy')}
+  let(:player2) { Player.new(brain2, 'resistance')}
 
   describe '#open_eyes' do
     subject { player1.open_eyes([player1, player2]) }
@@ -27,6 +27,22 @@ describe Player do
     it 'passes the team to the brain' do
       expect(brain1).to receive(:vote).with([player1, player2])
       subject
+    end
+  end
+
+  describe '#spy?' do
+    subject { player.spy?}
+    context 'a spy' do
+      let(:player) { player1 }
+      it 'returns true' do
+        expect(subject).to be(true)
+      end
+    end
+    context 'a rebel' do
+      let(:player) { player2 }
+      it 'returns false' do
+        expect(subject).to be(false)
+      end
     end
   end
 end
