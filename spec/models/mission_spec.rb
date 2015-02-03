@@ -70,4 +70,35 @@ describe Mission do
       end
     end
   end
+
+  describe '#game_over?' do
+    context 'when the mission votes stalemate' do
+      before do
+        allow(player1).to receive(:next).and_return(player2)
+        allow(player2).to receive(:next).and_return(player1)
+        allow(player1).to receive(:pick_team).and_return(players)
+        allow(player2).to receive(:pick_team).and_return(players)
+        allow(player1).to receive(:vote).with(players).and_return(false)
+        allow(player2).to receive(:vote).with(players).and_return(false)
+      end
+
+      it 'returns true' do
+        subject.play
+        expect(subject.game_over?).to be(true)
+      end
+    end
+
+    context 'when the mission is played' do
+      before do
+        allow(player1).to receive(:pick_team).and_return(players)
+        allow(player1).to receive(:vote).with(players).and_return(true)
+        allow(player2).to receive(:vote).with(players).and_return(true)
+      end
+      it 'returns false' do
+        subject.play
+        expect(subject.game_over?).to be(false)
+      end
+    end
+  end
 end
+

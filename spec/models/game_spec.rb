@@ -54,5 +54,10 @@ describe Game do
       expect(Mission).to receive(:new).ordered.with(player3, anything).and_return(mission)
       subject.play
     end
+
+    context 'when a mission stalemates' do
+      let(:mission) { double('Mission', game_over?: true)}
+
+    end
   end
 end
