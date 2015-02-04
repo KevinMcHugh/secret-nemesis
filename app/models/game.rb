@@ -1,5 +1,5 @@
 class Game
-  attr_reader :players, :random, :seed, :spy_wins, :resistance_wins
+  attr_reader :players, :random, :seed, :spy_wins, :resistance_wins, :winning_team
   def initialize(brain_classes, seed=nil)
     @seed = seed ? seed : Random.new.seed #this is just for deterministic testing
     @random = Random.new(seed)
@@ -10,27 +10,25 @@ class Game
     end
     @spy_wins        = 0
     @resistance_wins = 0
+    @winning_team    = nil
   end
 
   def play
-    spies.map do |spy|
-      spy.open_eyes(spies)
-    end
+    reveal_spies
     leader = @players.first
-    while spy_wins < 3 && resistance_wins < 3
+    while !winning_team
       mission = mission(leader)
-      leader = mission.leader.next
-      mission.winning_team == 'spy' ? @spy_wins += 1 : @resistance_wins += 1
-    end
-  end
-
-  def winning_team
-    if spy_wins == 3
-      'spy'
-    elsif resistance_wins == 3
-      'resistance'
-    else
-      nil
+      if mission.game_over?
+        @winning_team = 'spy'
+      else
+        leader = mission.leader.next
+        if mission.winning_team == 'spy'
+          @spy_wins += 1
+        elsif mission.winning_team == 'resistance'
+          @resistance_wins += 1
+        end
+        set_winner
+      end
     end
   end
 
@@ -48,7 +46,21 @@ class Game
     @spies ||= players.find_all(&:spy?)
   end
 
+  def reveal_spies
+    spies.map do |spy|
+      spy.open_eyes(spies)
+    end
+  end
+
   def mission(leader)
     Mission.new(leader, players)
+  end
+
+  def set_winner
+    if spy_wins == 3
+      @winning_team = 'spy'
+    elsif resistance_wins == 3
+      @winning_team = 'resistance'
+    end
   end
 end

@@ -25,7 +25,8 @@ describe Game do
   end
 
   describe '#play' do
-    let(:mission) { double('Mission', winning_team: 'spy', leader: double(next: player2))}
+    let(:mission) { double('Mission', winning_team: 'spy',
+      leader: double(next: player2), game_over?: false)}
 
     before do
       allow(brain_class_1).to receive(:new).and_return(brain1, brain3)
@@ -57,7 +58,10 @@ describe Game do
 
     context 'when a mission stalemates' do
       let(:mission) { double('Mission', game_over?: true)}
-
+      it 'ends the game' do
+        expect(Mission).to receive(:new).once.and_return(mission)
+        subject.play
+      end
     end
   end
 end
