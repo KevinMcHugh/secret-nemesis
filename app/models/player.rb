@@ -1,9 +1,11 @@
 class Player
 
-  attr_reader :brain, :role
-  def initialize(brain, role)
-    @brain = brain
-    @role  = role
+  attr_reader :brain, :role, :previous_player
+  attr_accessor :next_player
+  def initialize(brain, role, previous_player)
+    @brain          = brain
+    @role           = role
+    self.previous_player= previous_player if previous_player
   end
 
   def spy?
@@ -16,12 +18,15 @@ class Player
     brain.open_eyes(others)
   end
 
+  def previous_player=(previous_player)
+    @previous_player            = previous_player
+    previous_player.next_player = self
+  end
+
   delegate :vote, to: :brain
   delegate :pick_team, to: :brain
   delegate :show_player_votes, to: :brain
   delegate :pass_mission?, to: :brain
-
-  def next; nil; end
 
   def ==(other)
     brain == other.brain && role == other.role

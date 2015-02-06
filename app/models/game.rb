@@ -4,10 +4,14 @@ class Game
     @seed = seed ? seed : Random.new.seed #this is just for deterministic testing
     @random = Random.new(seed)
     roles = roles_for(brain_classes.size)
+    previous_player = nil
     @players = brain_classes.each_with_index.map do |bc, i|
       role = roles[i]
-      Player.new(bc.new(role), role)
+      player = Player.new(bc.new(role), role, previous_player)
+      previous_player = player
+      player
     end
+    players.first.previous_player = previous_player
     @spy_wins        = 0
     @resistance_wins = 0
     @winning_team    = nil

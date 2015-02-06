@@ -3,8 +3,8 @@ require 'spec_helper'
 describe Player do
   let(:brain1)  { double('brain1') }
   let(:brain2)  { double('brain2') }
-  let(:player1) { Player.new(brain1, 'spy')}
-  let(:player2) { Player.new(brain2, 'resistance')}
+  let(:player1) { Player.new(brain1, 'spy', nil)}
+  let(:player2) { Player.new(brain2, 'resistance', player1)}
 
   describe '#open_eyes' do
     subject { player1.open_eyes([player1, player2]) }

@@ -19,7 +19,7 @@ class Mission
         @game_over = true
         return
       end
-      @leader = leader.next
+      @leader = leader.next_player
       team = leader.pick_team
       vote_passes = vote(team)
     end

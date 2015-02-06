@@ -3,8 +3,8 @@ require 'spec_helper'
 describe Mission do
   let(:brain1) { double('brain1', show_player_votes: nil, pass_mission?: nil)}
   let(:brain2) { double('brain2', show_player_votes: nil, pass_mission?: nil)}
-  let(:player1) { Player.new(brain1, nil)}
-  let(:player2) { Player.new(brain2, nil)}
+  let(:player1) { Player.new(brain1, nil, nil)}
+  let(:player2) { Player.new(brain2, nil, player1)}
   let(:players) { [player1, player2]}
   subject { described_class.new(player1, players) }
   describe '#initialize' do
@@ -51,7 +51,7 @@ describe Mission do
     context 'the vote fails' do
       it 'asks the next leader to pick a team' do
         expect(player2).to receive(:pick_team).and_return(players)
-        expect(player1).to receive(:next).and_return(player2)
+        expect(player1).to receive(:next_player).and_return(player2)
         expect(player1).to receive(:vote).with(players).and_return(false, true)
         expect(player2).to receive(:vote).with(players).and_return(false, true)
         subject.play
@@ -60,8 +60,8 @@ describe Mission do
       context 'the vote fails 5 times' do
         it 'the game is over' do
           expect(player2).to receive(:pick_team).exactly(2).times.and_return(players)
-          expect(player1).to receive(:next).exactly(2).times.and_return(player2)
-          expect(player2).to receive(:next).exactly(2).times.and_return(player1)
+          expect(player1).to receive(:next_player).exactly(2).times.and_return(player2)
+          expect(player2).to receive(:next_player).exactly(2).times.and_return(player1)
           expect(player1).to receive(:vote).with(players).exactly(5).times.and_return(false)
           expect(player2).to receive(:vote).with(players).exactly(5).times.and_return(false)
           subject.play
@@ -74,12 +74,11 @@ describe Mission do
   describe '#game_over?' do
     context 'when the mission votes stalemate' do
       before do
-        allow(player1).to receive(:next).and_return(player2)
-        allow(player2).to receive(:next).and_return(player1)
         allow(player1).to receive(:pick_team).and_return(players)
         allow(player2).to receive(:pick_team).and_return(players)
         allow(player1).to receive(:vote).with(players).and_return(false)
         allow(player2).to receive(:vote).with(players).and_return(false)
+        player1.previous_player= player2
       end
 
       it 'returns true' do
