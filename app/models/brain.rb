@@ -2,6 +2,10 @@
 # implement in your brain.
 class Brain
 
+  def initialize(role)
+    # You might want to copy down your role.
+  end
+
   def open_eyes(other_spies)
     # Reveals spies to each other. Return
     # value is unused.

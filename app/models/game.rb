@@ -2,9 +2,9 @@ class Game
   attr_reader :players, :random, :seed, :spy_wins, :resistance_wins, :winning_team
   def initialize(brain_classes, seed=nil)
     @seed = seed ? seed : Random.new.seed #this is just for deterministic testing
-    @random = Random.new(seed)
-    roles = roles_for(brain_classes.size)
+    @random = Random.new(@seed)
     previous_player = nil
+    roles = roles_for(brain_classes.length)
     @players = brain_classes.each_with_index.map do |bc, i|
       role = roles[i]
       player = Player.new(bc.new(role), role, previous_player)
@@ -25,7 +25,7 @@ class Game
       if mission.game_over?
         @winning_team = 'spy'
       else
-        leader = mission.leader.next
+        leader = mission.leader.next_player
         if mission.winning_team == 'spy'
           @spy_wins += 1
         elsif mission.winning_team == 'resistance'
