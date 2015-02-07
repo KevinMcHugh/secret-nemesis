@@ -24,7 +24,10 @@ class Mission
       vote_passes = vote(team)
     end
     if vote_passes
-      team.each { |p| p.pass_mission? }
+      spies = team.find_all { |p| p.spy? }
+      spies.map { |p| p.pass_mission?(team) }
+      #TODO LOL
+
     end
   end
 

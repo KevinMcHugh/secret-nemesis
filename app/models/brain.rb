@@ -28,8 +28,10 @@ class Brain
     # Return value is unused.
   end
 
-  def pass_mission?
+  def pass_mission?(team)
     # Return value is true or false, indicating
-    # whether or not to pass the mission.
+    # whether or not to pass the mission. This method is
+    # only called for spies. Resistance members must pass
+    # missions.
   end
 end

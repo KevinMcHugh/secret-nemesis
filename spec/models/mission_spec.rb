@@ -3,8 +3,8 @@ require 'spec_helper'
 describe Mission do
   let(:brain1) { double('brain1', show_player_votes: nil, pass_mission?: nil)}
   let(:brain2) { double('brain2', show_player_votes: nil, pass_mission?: nil)}
-  let(:player1) { Player.new(brain1, nil, nil)}
-  let(:player2) { Player.new(brain2, nil, player1)}
+  let(:player1) { Player.new(brain1, 'spy', nil)}
+  let(:player2) { Player.new(brain2, 'resistance', player1)}
   let(:players) { [player1, player2]}
   subject { described_class.new(player1, players) }
   describe '#initialize' do
@@ -39,11 +39,11 @@ describe Mission do
     end
 
     context 'the vote passes' do
-      it 'asks the players if they want to pass the mission' do
+      it 'asks the spies if they want to pass the mission' do
         expect(player1).to receive(:vote).with(players).and_return(true)
         expect(player2).to receive(:vote).with(players).and_return(true)
-        expect(player1).to receive(:pass_mission?)
-        expect(player2).to receive(:pass_mission?)
+        expect(player1).to receive(:pass_mission?).with(players)
+        expect(player2).not_to receive(:pass_mission?)
         subject.play
       end
     end

@@ -40,7 +40,7 @@ describe Game do
 
   describe '#play' do
     let(:mission) { double('Mission', winning_team: 'spy',
-      leader: double(next: player2), game_over?: false)}
+      leader: double(next_player: player2), game_over?: false)}
 
     before do
       allow(brain_class_1).to receive(:new).and_return(brain1, brain3)
@@ -63,7 +63,7 @@ describe Game do
     end
 
     it 'creates new missions with the correct leader' do
-      expect(mission).to receive(:leader).and_return(double(next: player2), double(next: player3))
+      expect(mission).to receive(:leader).and_return(double(next_player: player2), double(next_player: player3))
       expect(Mission).to receive(:new).ordered.with(player1, anything).and_return(mission)
       expect(Mission).to receive(:new).ordered.with(player2, anything).and_return(mission)
       expect(Mission).to receive(:new).ordered.with(player3, anything).and_return(mission)
