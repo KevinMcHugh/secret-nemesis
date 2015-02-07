@@ -1,8 +1,10 @@
 require 'spec_helper'
 
 describe Mission do
-  let(:brain1) { double('brain1', show_player_votes: nil, pass_mission?: nil)}
-  let(:brain2) { double('brain2', show_player_votes: nil, pass_mission?: nil)}
+  let(:brain1) { double('brain1', show_player_votes: nil,
+    pass_mission?: false, show_mission_plays: nil)}
+  let(:brain2) { double('brain2', show_player_votes: nil,
+    pass_mission?: false, show_mission_plays: nil)}
   let(:player1) { Player.new(brain1, 'spy', nil)}
   let(:player2) { Player.new(brain2, 'resistance', player1)}
   let(:players) { [player1, player2]}
@@ -19,6 +21,8 @@ describe Mission do
       allow(player1).to receive(:pick_team).and_return(players)
       allow(player1).to receive(:vote).with(players).and_return(true)
       allow(player2).to receive(:vote).with(players).and_return(true)
+      allow(player1).to receive(:show_mission_plays)
+      allow(player2).to receive(:show_mission_plays)
     end
 
     it 'asks the leader to pick a team' do
@@ -43,9 +47,17 @@ describe Mission do
         allow(player1).to receive(:vote).with(players).and_return(true)
         allow(player2).to receive(:vote).with(players).and_return(true)
       end
+
       it 'asks the spies if they want to pass the mission' do
         expect(player1).to receive(:pass_mission?).with(players)
         expect(player2).not_to receive(:pass_mission?)
+        subject.play
+      end
+
+      it 'reveals the mission plays' do
+        expect(player1).to receive(:show_mission_plays).with({true => [true], false => [false]})
+        expect(player2).to receive(:show_mission_plays).with({true => [true], false => [false]})
+        expect(player1).to receive(:pass_mission?).and_return(false)
         subject.play
       end
 
@@ -70,8 +82,8 @@ describe Mission do
       it 'asks the next leader to pick a team' do
         expect(player2).to receive(:pick_team).and_return(players)
         expect(player1).to receive(:next_player).and_return(player2)
-        expect(player1).to receive(:vote).with(players).and_return(false, true)
-        expect(player2).to receive(:vote).with(players).and_return(false, true)
+        expect(player1).to receive(:vote).with(players).and_return(false)
+        expect(player2).to receive(:vote).with(players).and_return(false)
         subject.play
       end
 

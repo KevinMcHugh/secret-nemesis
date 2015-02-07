@@ -22,6 +22,14 @@ describe Player do
     end
   end
 
+  describe '#show_mission_plays' do
+    subject { player1.show_mission_plays({true => [true]})}
+    it 'passes a hash of players to votes to the brain' do
+      expect(brain1).to receive(:show_mission_plays).with({true => [true]})
+      subject
+    end
+  end
+
   describe '#vote' do
     subject { player1.vote([player1, player2])}
     it 'passes the team to the brain' do

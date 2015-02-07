@@ -27,6 +27,7 @@ class Player
   delegate :pick_team, to: :brain
   delegate :show_player_votes, to: :brain
   delegate :pass_mission?, to: :brain
+  delegate :show_mission_plays, to: :brain
 
   def ==(other)
     brain == other.brain && role == other.role

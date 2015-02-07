@@ -26,6 +26,8 @@ class Mission
     if vote_passes
       spies = team.find_all { |p| p.spy? }
       votes = spies.map { |p| p.pass_mission?(team) }
+      votes += (team.length - spies.length).times.map {true}
+      players.each { |p| p.show_mission_plays(votes.group_by {|o| o })}
       if votes.include?(false)
         @winning_team = 'spy'
       else
