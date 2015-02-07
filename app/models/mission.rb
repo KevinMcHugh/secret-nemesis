@@ -29,6 +29,8 @@ class Mission
       votes += (team.length - spies.length).times.map {true}
       players.each { |p| p.show_mission_plays(votes.group_by {|o| o })}
       if votes.include?(false)
+        # TODO mission 4 in 7+ player games
+        # TODO eventing makes printing possible :/
         @winning_team = 'spy'
       else
         @winning_team = 'resistance'

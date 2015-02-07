@@ -5,6 +5,7 @@ class Player
   def initialize(brain, role, previous_player)
     @brain          = brain
     @role           = role
+    # TODO introduce PlayerAPI layer to make braining possible
     self.previous_player= previous_player if previous_player
   end
 
