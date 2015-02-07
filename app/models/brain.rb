@@ -28,6 +28,9 @@ class Brain
     # Return value is unused.
   end
 
+  def show_mission_plays(players_to_votes)
+  end
+
   def pass_mission?(team)
     # Return value is true or false, indicating
     # whether or not to pass the mission. This method is
