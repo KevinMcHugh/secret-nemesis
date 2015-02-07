@@ -1,6 +1,6 @@
 class Mission
 
-  attr_reader :leader, :players, :game_over
+  attr_reader :leader, :players, :game_over, :winning_team
   alias_method :game_over?, :game_over
 
   def initialize(leader, players)
@@ -25,13 +25,14 @@ class Mission
     end
     if vote_passes
       spies = team.find_all { |p| p.spy? }
-      spies.map { |p| p.pass_mission?(team) }
-      #TODO LOL
-
+      votes = spies.map { |p| p.pass_mission?(team) }
+      if votes.include?(false)
+        @winning_team = 'spy'
+      else
+        @winning_team = 'resistance'
+      end
     end
   end
-
-  def winning_team; nil; end
 
   private
   def vote(team)

@@ -39,12 +39,30 @@ describe Mission do
     end
 
     context 'the vote passes' do
+      before do
+        allow(player1).to receive(:vote).with(players).and_return(true)
+        allow(player2).to receive(:vote).with(players).and_return(true)
+      end
       it 'asks the spies if they want to pass the mission' do
-        expect(player1).to receive(:vote).with(players).and_return(true)
-        expect(player2).to receive(:vote).with(players).and_return(true)
         expect(player1).to receive(:pass_mission?).with(players)
         expect(player2).not_to receive(:pass_mission?)
         subject.play
+      end
+
+      context 'the spies pass the mission' do
+        it 'sets the winning team to resistance' do
+          expect(player1).to receive(:pass_mission?).and_return(true)
+          subject.play
+          expect(subject.winning_team).to eq('resistance')
+        end
+      end
+
+      context 'the spies fail the mission' do
+        it 'sets the winning team to spy' do
+          expect(player1).to receive(:pass_mission?).and_return(false)
+          subject.play
+          expect(subject.winning_team).to eq('spy')
+        end
       end
     end
 
