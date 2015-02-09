@@ -4,15 +4,24 @@ describe Mission do
   let(:brain1) { double('brain1', show_player_votes: nil,
     pass_mission?: false, show_mission_plays: nil)}
   let(:brain2) { double('brain2', show_player_votes: nil,
-    pass_mission?: false, show_mission_plays: nil)}
+    pass_mission?: false, show_mission_plays: nil, vote: nil)}
   let(:player1) { Player.new(brain1, 'spy', nil)}
   let(:player2) { Player.new(brain2, 'resistance', player1)}
-  let(:players) { [player1, player2]}
-  subject { described_class.new(player1, players) }
+  let(:player3) { Player.new(brain2, 'resistance', player2)}
+  let(:player4) { Player.new(brain2, 'resistance', player3)}
+  let(:player5) { Player.new(brain2, 'resistance', player4)}
+
+  let(:players) { [player1, player2, player3, player4, player5]}
+  subject { described_class.new(player1, players, 1) }
   describe '#initialize' do
-    it 'accepts a leader and players' do
+    it 'accepts a leader, players and mission number' do
       expect(subject.leader).to eql(player1)
       expect(subject.players).to eql(players)
+      expect(subject.mission_number).to eql(1)
+    end
+
+    it 'picks the correct number of team members' do
+      expect(subject.team_members).to eql(2)
     end
   end
 
@@ -21,6 +30,9 @@ describe Mission do
       allow(player1).to receive(:pick_team).and_return(players)
       allow(player1).to receive(:vote).with(players).and_return(true)
       allow(player2).to receive(:vote).with(players).and_return(true)
+      allow(player3).to receive(:vote).with(players).and_return(true)
+      allow(player4).to receive(:vote).with(players).and_return(true)
+      allow(player5).to receive(:vote).with(players).and_return(false)
       allow(player1).to receive(:show_mission_plays)
       allow(player2).to receive(:show_mission_plays)
     end
@@ -37,8 +49,10 @@ describe Mission do
     end
 
     it 'reveals votes to all players' do
-      expect(player1).to receive(:show_player_votes).with({player1 => true, player2 => true})
-      expect(player2).to receive(:show_player_votes).with({player1 => true, player2 => true})
+      expect(player1).to receive(:show_player_votes).with({player1 => true,
+        player2 => true, player3 => true, player4 => true, player5 => false})
+      expect(player2).to receive(:show_player_votes).with({player1 => true,
+        player2 => true, player3 => true, player4 => true, player5 => false})
       subject.play
     end
 
@@ -55,8 +69,10 @@ describe Mission do
       end
 
       it 'reveals the mission plays' do
-        expect(player1).to receive(:show_mission_plays).with({true => [true], false => [false]})
-        expect(player2).to receive(:show_mission_plays).with({true => [true], false => [false]})
+        expect(player1).to receive(:show_mission_plays).with({true => [true, true, true, true],
+          false => [false]})
+        expect(player2).to receive(:show_mission_plays).with({true => [true, true, true, true],
+          false => [false]})
         expect(player1).to receive(:pass_mission?).and_return(false)
         subject.play
       end

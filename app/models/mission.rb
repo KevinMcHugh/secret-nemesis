@@ -1,11 +1,12 @@
 class Mission
 
-  attr_reader :leader, :players, :game_over, :winning_team
+  attr_reader :leader, :players, :mission_number, :game_over, :winning_team
   alias_method :game_over?, :game_over
 
-  def initialize(leader, players)
-    @leader    = leader
-    @players   = players
+  def initialize(leader, players, mission_number)
+    @leader         = leader
+    @players        = players
+    @mission_number = mission_number
     @game_over = false
   end
 
@@ -29,7 +30,21 @@ class Mission
     end
   end
 
+  def team_members
+    # binding.pry
+    players_to_sizes[players.length][mission_number - 1]
+  end
+
   private
+  def players_to_sizes
+    { 5 =>  [2,3,2,3,3],
+      6 =>  [2,3,4,3,4],
+      7 =>  [2,3,3,4,4],
+      8 =>  [3,4,4,5,5],
+      9 =>  [3,4,4,5,5],
+      10 => [3,4,4,5,5]}
+  end
+
   def vote(team)
     players_to_votes = {}
     players.each do |player|
