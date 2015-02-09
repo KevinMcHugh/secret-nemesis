@@ -31,7 +31,6 @@ class Mission
   end
 
   def team_members
-    # binding.pry
     players_to_sizes[players.length][mission_number - 1]
   end
 

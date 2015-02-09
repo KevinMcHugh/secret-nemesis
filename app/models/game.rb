@@ -20,8 +20,10 @@ class Game
   def play
     reveal_spies
     leader = @players.first
+    mission_number = 1
     while !winning_team
-      mission = mission(leader)
+      mission = mission(leader, mission_number)
+      mission_number += 1
       if mission.game_over?
         @winning_team = 'spy'
       else
@@ -56,8 +58,8 @@ class Game
     end
   end
 
-  def mission(leader)
-    Mission.new(leader, players)
+  def mission(leader, mission_number)
+    Mission.new(leader, players, mission_number)
   end
 
   def set_winner
