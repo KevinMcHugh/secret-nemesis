@@ -2,6 +2,8 @@
 # implement in your brain.
 class Brain
 
+  attr_writer :api
+
   def initialize(role)
     # You might want to copy down your role.
   end
@@ -16,7 +18,7 @@ class Brain
     # of the team
   end
 
-  def pick_team
+  def pick_team(team_members)
     # As leader, pick a team to go on a mission.
     # Return value is an array of Players.
   end

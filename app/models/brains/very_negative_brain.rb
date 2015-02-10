@@ -1,22 +1,25 @@
 class VeryNegativeBrain < Brain
   def initialize(role)
     # You might want to copy down your role.
+    @role = role
   end
 
   def open_eyes(other_spies)
     # Reveals spies to each other. Return
     # value is unused.
+    @other_spies = other_spies
   end
 
   def vote(team)
     # Return true or false. True approves
     # of the team
-    true
+    false
   end
 
-  def pick_team
+  def pick_team(team_members)
     # As leader, pick a team to go on a mission.
     # Return value is an array of Players.
+    api.player_names.first(team_members)
   end
 
   def show_player_votes(players_to_votes)
@@ -29,6 +32,6 @@ class VeryNegativeBrain < Brain
   def pass_mission?
     # Return value is true or true, indicating
     # whether or not to pass the mission.
-    true
+    false
   end
 end

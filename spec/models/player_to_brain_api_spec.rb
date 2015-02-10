@@ -1,8 +1,8 @@
 require 'spec_helper'
 
 describe PlayerToBrainApi do
-  let(:brain1)     { double('brain1') }
-  let(:brain2)     { double('brain2') }
+  let(:brain1)     { double('brain1', :api= => nil) }
+  let(:brain2)     { double('brain2', :api= => nil) }
   let(:player1)    { Player.new(brain1, 'spy', nil)}
   let(:player2)    { Player.new(brain2, 'resistance', player1)}
 

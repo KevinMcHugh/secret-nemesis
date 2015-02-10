@@ -6,8 +6,10 @@ class Player
     @brain          = brain
     @role           = role
     @player_api     = PlayerToBrainApi.new(self, brain)
-    self.previous_player= previous_player if previous_player
     @name = rand(100)
+
+    brain.api= player_api
+    self.previous_player= previous_player if previous_player
   end
 
   def spy?
