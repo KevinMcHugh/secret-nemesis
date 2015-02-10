@@ -3,19 +3,11 @@ class Game
   def initialize(brain_classes, seed=nil)
     @seed = seed ? seed : Random.new.seed #this is just for deterministic testing
     @random = Random.new(@seed)
-    previous_player = nil
-    roles = roles_for(brain_classes.length)
-    @players = brain_classes.each_with_index.map do |bc, i|
-      role = roles[i]
-      player = Player.new(bc.new(role), role, previous_player)
-      previous_player = player
-      player
-    end
-    players.first.previous_player = previous_player
-    # puts players.map {|player| player.brain.class }
+    set_up_players(brain_classes)
     @spy_wins        = 0
     @resistance_wins = 0
     @winning_team    = nil
+    @events          = []
   end
 
   def play
@@ -47,7 +39,23 @@ class Game
         resistance spy resistance resistance spy }
   end
 
+  def notify(event)
+    @events << event
+  end
+
   private
+  def set_up_players(brain_classes)
+    previous_player = nil
+    roles = roles_for(brain_classes.length)
+    @players = brain_classes.each_with_index.map do |bc, i|
+      role = roles[i]
+      player = Player.new(bc.new(role), role, previous_player)
+      previous_player = player
+      player
+    end
+    players.first.previous_player = previous_player
+  end
+
   def roles_for(players)
     self.class.all_roles[0..players - 1].shuffle(random: random)
   end
