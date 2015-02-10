@@ -61,8 +61,9 @@ describe PlayerToBrainApi do
 
   context '#pick_team' do
     subject { api.pick_team(2) }
+    before { player1.previous_player = player2}
     it 'passes the command to the brain' do
-      expect(brain1).to receive(:pick_team).with(2)
+      expect(brain1).to receive(:pick_team).with(2).and_return([player1.name, player2.name])
       subject
     end
   end

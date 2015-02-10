@@ -48,4 +48,7 @@ class Player
   def ==(other)
     brain == other.brain && role == other.role
   end
+
+  def to_s; "#{name}|#{brain.class}|#{role}"; end
+  def inspect; to_s; end
 end

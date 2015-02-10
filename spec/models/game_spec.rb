@@ -39,7 +39,7 @@ describe Game do
   end
 
   describe '#play' do
-    let(:mission) { double('Mission', winning_team: 'spy',
+    let(:mission) { double('Mission', winning_team: 'spy', play: nil,
       leader: double(next_player: player2), game_over?: false)}
 
     before do
@@ -71,10 +71,11 @@ describe Game do
     end
 
     context 'when a mission stalemates' do
-      let(:mission) { double('Mission', game_over?: true)}
+      let(:mission) { double('Mission', game_over?: true, play: nil, winning_team: nil)}
       it 'ends the game' do
         expect(Mission).to receive(:new).once.and_return(mission)
         subject.play
+        expect(subject.winning_team).to eql('spy')
       end
     end
   end

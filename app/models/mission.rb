@@ -15,6 +15,9 @@ class Mission
     # TODO: team size
     team = leader.pick_team(team_members)
     vote_passes = vote(team)
+    puts "  Starting mission #{mission_number}"
+    puts "  #{leader.to_s} has chosen #{team}"
+    puts "    and the vote #{vote_passes ? 'passes' : 'failed'}"
     while !vote_passes
       votes_failed += 1
       if votes_failed == 5
@@ -25,6 +28,8 @@ class Mission
       @leader = leader.next_player
       team = leader.pick_team(team_members)
       vote_passes = vote(team)
+      puts "  #{leader.to_s} has chosen #{team}"
+      puts "    and the vote #{vote_passes ? 'passes' : 'failed'}"
     end
     mission(team) if vote_passes
   end
@@ -57,9 +62,10 @@ class Mission
   end
 
   def mission(team)
-    spies = team.find_all { |p| p.spy? }
-    votes = spies.map { |p| p.pass_mission?(team) }
-    votes += (team.length - spies.length).times.map {true}
+    votes = team.map do |p|
+      p.spy? ? p.pass_mission?(team) : true
+    end
+    puts "   The votes are in: #{votes}"
     players.each { |p| p.show_mission_plays(votes.group_by {|o| o })}
     if votes.include?(false)
       # TODO mission 4 in 7+ player games

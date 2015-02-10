@@ -1,4 +1,4 @@
-class VeryNegativeBrain < Brain
+class VeryPositiveBrain < Brain
   def initialize(role)
     # You might want to copy down your role.
     @role = role
@@ -13,7 +13,7 @@ class VeryNegativeBrain < Brain
   def vote(team)
     # Return true or false. True approves
     # of the team
-    false
+    true
   end
 
   def pick_team(team_members)
@@ -35,6 +35,6 @@ class VeryNegativeBrain < Brain
   def pass_mission?(team)
     # Return value is true or true, indicating
     # whether or not to pass the mission.
-    false
+    true
   end
 end

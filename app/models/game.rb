@@ -12,6 +12,7 @@ class Game
       player
     end
     players.first.previous_player = previous_player
+    # puts players.map {|player| player.brain.class }
     @spy_wins        = 0
     @resistance_wins = 0
     @winning_team    = nil
@@ -24,6 +25,7 @@ class Game
     while !winning_team
       mission = mission(leader, mission_number)
       mission.play
+      puts "Mission #{mission_number} won by #{mission.winning_team}"
       mission_number += 1
       if mission.game_over?
         @winning_team = 'spy'
@@ -37,6 +39,7 @@ class Game
         set_winner
       end
     end
+    puts "Game won by #{winning_team}"
   end
 
   def self.all_roles
