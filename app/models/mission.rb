@@ -13,7 +13,7 @@ class Mission
   def play
     votes_failed = 0
     # TODO: team size
-    team = leader.pick_team
+    team = leader.pick_team(team_members)
     vote_passes = vote(team)
     while !vote_passes
       votes_failed += 1
@@ -25,9 +25,7 @@ class Mission
       team = leader.pick_team
       vote_passes = vote(team)
     end
-    if vote_passes
-      mission(team)
-    end
+    mission(team) if vote_passes
   end
 
   def team_members

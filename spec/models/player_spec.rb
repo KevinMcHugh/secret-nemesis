@@ -60,9 +60,9 @@ describe Player do
   end
 
   describe '#pick_team' do
-    subject { player1.pick_team }
+    subject { player1.pick_team(2) }
     it 'passes the request to the PlayerToBrainApi' do
-      expect(player_api).to receive(:pick_team)
+      expect(player_api).to receive(:pick_team).with(2)
       subject
     end
   end

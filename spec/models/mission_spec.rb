@@ -38,7 +38,7 @@ describe Mission do
     end
 
     it 'asks the leader to pick a team' do
-      expect(player1).to receive(:pick_team)
+      expect(player1).to receive(:pick_team).with(2)
       subject.play
     end
 

@@ -14,8 +14,8 @@ class PlayerToBrainApi
     brain.vote(team.map(&:name))
   end
 
-  def pick_team
-    brain.pick_team
+  def pick_team(team_members)
+    brain.pick_team(team_members)
   end
 
   def show_player_votes(players_to_votes)

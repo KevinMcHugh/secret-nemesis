@@ -60,9 +60,9 @@ describe PlayerToBrainApi do
   end
 
   context '#pick_team' do
-    subject { api.pick_team }
+    subject { api.pick_team(2) }
     it 'passes the command to the brain' do
-      expect(brain1).to receive(:pick_team)
+      expect(brain1).to receive(:pick_team).with(2)
       subject
     end
   end
