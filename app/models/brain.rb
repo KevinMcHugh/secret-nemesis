@@ -2,7 +2,7 @@
 # implement in your brain.
 class Brain
 
-  attr_writer :api
+  attr_accessor :api
 
   def initialize(role)
     # You might want to copy down your role.

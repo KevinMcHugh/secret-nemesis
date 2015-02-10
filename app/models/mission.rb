@@ -19,10 +19,11 @@ class Mission
       votes_failed += 1
       if votes_failed == 5
         @game_over = true
+        @winning_team = 'spy'
         return
       end
       @leader = leader.next_player
-      team = leader.pick_team
+      team = leader.pick_team(team_members)
       vote_passes = vote(team)
     end
     mission(team) if vote_passes

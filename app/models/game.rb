@@ -23,6 +23,7 @@ class Game
     mission_number = 1
     while !winning_team
       mission = mission(leader, mission_number)
+      mission.play
       mission_number += 1
       if mission.game_over?
         @winning_team = 'spy'

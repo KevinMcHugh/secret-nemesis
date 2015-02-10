@@ -15,7 +15,10 @@ class PlayerToBrainApi
   end
 
   def pick_team(team_members)
-    brain.pick_team(team_members)
+    names = brain.pick_team(team_members)
+    names.map do |name|
+      @player.players.find {|player| player.name == name }
+    end
   end
 
   def show_player_votes(players_to_votes)
