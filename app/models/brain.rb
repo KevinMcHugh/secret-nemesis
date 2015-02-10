@@ -13,7 +13,7 @@ class Brain
     # value is unused.
   end
 
-  def vote(team)
+  def accept_team?(team)
     # Return true or false. True approves
     # of the team
   end
@@ -23,14 +23,14 @@ class Brain
     # Return value is an array of Players.
   end
 
-  def show_player_votes(players_to_votes)
+  def show_team_votes(players_to_votes)
     # Shows the votes made on the last team voted on.
     # players_to_votes is a hash with players as keys and
     # votes as values. { player1 => true}.
     # Return value is unused.
   end
 
-  def show_mission_plays(players_to_votes)
+  def show_mission_votes(players_to_votes)
   end
 
   def pass_mission?(team)

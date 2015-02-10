@@ -10,8 +10,8 @@ class PlayerToBrainApi
     brain.open_eyes(other_spies.map(&:name))
   end
 
-  def vote(team)
-    brain.vote(team.map(&:name))
+  def accept_team?(team)
+    brain.accept_team?(team.map(&:name))
   end
 
   def pick_team(team_members)
@@ -21,16 +21,16 @@ class PlayerToBrainApi
     end
   end
 
-  def show_player_votes(players_to_votes)
+  def show_team_votes(players_to_votes)
     result = {}
     players_to_votes.each_pair do |player, vote|
       result[player.name] = vote
     end
-    brain.show_player_votes(result)
+    brain.show_team_votes(result)
   end
 
-  def show_mission_plays(grouped_votes)
-    brain.show_mission_plays(grouped_votes.values.flatten)
+  def show_mission_votes(grouped_votes)
+    brain.show_mission_votes(grouped_votes.values.flatten)
   end
 
   def pass_mission?(team)

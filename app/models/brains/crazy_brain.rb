@@ -12,7 +12,7 @@ class CrazyBrain < Brain
     # IM CRAZY
   end
 
-  def vote(team)
+  def accept_team?(team)
     # Return true or false. True approves
     # of the team
     heh_heh_heh_heh
@@ -24,14 +24,14 @@ class CrazyBrain < Brain
     api.player_names.sample(team_members)
   end
 
-  def show_player_votes(players_to_votes)
+  def show_team_votes(players_to_votes)
     # Shows the votes made on the last team voted on.
     # players_to_votes is a hash with players as keys and
     # votes as values. { player1 => true}.
     # Return value is unused.
   end
 
-  def show_mission_plays(players_to_votes)
+  def show_mission_votes(players_to_votes)
   end
 
   def pass_mission?(team)

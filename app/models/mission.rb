@@ -51,13 +51,13 @@ class Mission
   def vote(team)
     players_to_votes = {}
     players.each do |player|
-      players_to_votes[player] = player.vote(team)
+      players_to_votes[player] = player.accept_team?(team)
     end
     votes = players_to_votes.values
     grouped_votes = votes.group_by { |v| v }
     approve_votes    = grouped_votes[true].try(:count)  || 0
     disapprove_votes = grouped_votes[false].try(:count) || 0
-    players.each { |p| p.show_player_votes(players_to_votes) }
+    players.each { |p| p.show_team_votes(players_to_votes) }
     approve_votes > disapprove_votes
   end
 
@@ -66,7 +66,7 @@ class Mission
       p.spy? ? p.pass_mission?(team) : true
     end
     puts "   The votes are in: #{votes}"
-    players.each { |p| p.show_mission_plays(votes.group_by {|o| o })}
+    players.each { |p| p.show_mission_votes(votes.group_by {|o| o })}
     if votes.include?(false)
       # TODO mission 4 in 7+ player games
       # TODO eventing makes printing possible :/

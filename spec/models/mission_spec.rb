@@ -1,10 +1,10 @@
 require 'spec_helper'
 
 describe Mission do
-  let(:brain1) { double('brain1', show_player_votes: nil,
-    pass_mission?: false, show_mission_plays: nil, :api= => nil)}
-  let(:brain2) { double('brain2', show_player_votes: nil,
-    pass_mission?: false, show_mission_plays: nil, vote: nil, :api= => nil)}
+  let(:brain1) { double('brain1', show_team_votes: nil,
+    pass_mission?: false, show_mission_votes: nil, :api= => nil)}
+  let(:brain2) { double('brain2', show_team_votes: nil,
+    pass_mission?: false, show_mission_votes: nil, accept_team?: nil, :api= => nil)}
   let(:player1) { Player.new(brain1, 'spy', nil)}
   let(:player2) { Player.new(brain2, 'resistance', player1)}
   let(:player3) { Player.new(brain2, 'resistance', player2)}
@@ -28,13 +28,13 @@ describe Mission do
   describe '#play' do
     before do
       allow(player1).to receive(:pick_team).and_return(players)
-      allow(player1).to receive(:vote).with(players).and_return(true)
-      allow(player2).to receive(:vote).with(players).and_return(true)
-      allow(player3).to receive(:vote).with(players).and_return(true)
-      allow(player4).to receive(:vote).with(players).and_return(true)
-      allow(player5).to receive(:vote).with(players).and_return(false)
-      allow(player1).to receive(:show_mission_plays)
-      allow(player2).to receive(:show_mission_plays)
+      allow(player1).to receive(:accept_team?).with(players).and_return(true)
+      allow(player2).to receive(:accept_team?).with(players).and_return(true)
+      allow(player3).to receive(:accept_team?).with(players).and_return(true)
+      allow(player4).to receive(:accept_team?).with(players).and_return(true)
+      allow(player5).to receive(:accept_team?).with(players).and_return(false)
+      allow(player1).to receive(:show_mission_votes)
+      allow(player2).to receive(:show_mission_votes)
     end
 
     it 'asks the leader to pick a team' do
@@ -43,23 +43,23 @@ describe Mission do
     end
 
     it 'puts the picked team to a vote' do
-      expect(player1).to receive(:vote).with(players)
-      expect(player2).to receive(:vote).with(players)
+      expect(player1).to receive(:accept_team?).with(players)
+      expect(player2).to receive(:accept_team?).with(players)
       subject.play
     end
 
     it 'reveals votes to all players' do
-      expect(player1).to receive(:show_player_votes).with({player1 => true,
+      expect(player1).to receive(:show_team_votes).with({player1 => true,
         player2 => true, player3 => true, player4 => true, player5 => false})
-      expect(player2).to receive(:show_player_votes).with({player1 => true,
+      expect(player2).to receive(:show_team_votes).with({player1 => true,
         player2 => true, player3 => true, player4 => true, player5 => false})
       subject.play
     end
 
     context 'the vote passes' do
       before do
-        allow(player1).to receive(:vote).with(players).and_return(true)
-        allow(player2).to receive(:vote).with(players).and_return(true)
+        allow(player1).to receive(:accept_team?).with(players).and_return(true)
+        allow(player2).to receive(:accept_team?).with(players).and_return(true)
       end
 
       it 'asks the spies if they want to pass the mission' do
@@ -69,9 +69,9 @@ describe Mission do
       end
 
       it 'reveals the mission plays' do
-        expect(player1).to receive(:show_mission_plays).with({true => [true, true, true, true],
+        expect(player1).to receive(:show_mission_votes).with({true => [true, true, true, true],
           false => [false]})
-        expect(player2).to receive(:show_mission_plays).with({true => [true, true, true, true],
+        expect(player2).to receive(:show_mission_votes).with({true => [true, true, true, true],
           false => [false]})
         expect(player1).to receive(:pass_mission?).and_return(false)
         subject.play
@@ -98,8 +98,8 @@ describe Mission do
       it 'asks the next leader to pick a team' do
         expect(player2).to receive(:pick_team).and_return(players)
         expect(player1).to receive(:next_player).and_return(player2)
-        expect(player1).to receive(:vote).with(players).and_return(false)
-        expect(player2).to receive(:vote).with(players).and_return(false)
+        expect(player1).to receive(:accept_team?).with(players).and_return(false)
+        expect(player2).to receive(:accept_team?).with(players).and_return(false)
         subject.play
       end
 
@@ -108,8 +108,8 @@ describe Mission do
           expect(player2).to receive(:pick_team).exactly(2).times.and_return(players)
           expect(player1).to receive(:next_player).exactly(2).times.and_return(player2)
           expect(player2).to receive(:next_player).exactly(2).times.and_return(player1)
-          expect(player1).to receive(:vote).with(players).exactly(5).times.and_return(false)
-          expect(player2).to receive(:vote).with(players).exactly(5).times.and_return(false)
+          expect(player1).to receive(:accept_team?).with(players).exactly(5).times.and_return(false)
+          expect(player2).to receive(:accept_team?).with(players).exactly(5).times.and_return(false)
           subject.play
           expect(subject.game_over?).to be_true
         end
@@ -122,8 +122,8 @@ describe Mission do
       before do
         allow(player1).to receive(:pick_team).and_return(players)
         allow(player2).to receive(:pick_team).and_return(players)
-        allow(player1).to receive(:vote).with(players).and_return(false)
-        allow(player2).to receive(:vote).with(players).and_return(false)
+        allow(player1).to receive(:accept_team?).with(players).and_return(false)
+        allow(player2).to receive(:accept_team?).with(players).and_return(false)
         player1.previous_player= player2
       end
 
@@ -136,8 +136,8 @@ describe Mission do
     context 'when the mission is played' do
       before do
         allow(player1).to receive(:pick_team).and_return(players)
-        allow(player1).to receive(:vote).with(players).and_return(true)
-        allow(player2).to receive(:vote).with(players).and_return(true)
+        allow(player1).to receive(:accept_team?).with(players).and_return(true)
+        allow(player2).to receive(:accept_team?).with(players).and_return(true)
       end
       it 'returns false' do
         subject.play

@@ -39,11 +39,11 @@ class Player
     @players
   end
 
-  delegate :vote, to: :player_api
+  delegate :accept_team?, to: :player_api
   delegate :pick_team, to: :player_api
-  delegate :show_player_votes, to: :player_api
+  delegate :show_team_votes, to: :player_api
   delegate :pass_mission?, to: :player_api
-  delegate :show_mission_plays, to: :player_api
+  delegate :show_mission_votes, to: :player_api
 
   def ==(other)
     brain == other.brain && role == other.role

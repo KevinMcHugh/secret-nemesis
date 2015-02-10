@@ -26,27 +26,27 @@ describe PlayerToBrainApi do
     end
   end
 
-  context '#vote' do
-    subject { api.vote([player1, player2]) }
+  context '#accept_team?' do
+    subject { api.accept_team?([player1, player2]) }
     it 'passes an array of player names' do
-      expect(brain1).to receive(:vote).with([player1.name, player2.name])
+      expect(brain1).to receive(:accept_team?).with([player1.name, player2.name])
       subject
     end
   end
 
-  context '#show_player_votes' do
-    subject { api.show_player_votes({player1 => true, player2 => false}) }
+  context '#show_team_votes' do
+    subject { api.show_team_votes({player1 => true, player2 => false}) }
     it 'passes an array of player names to votes' do
-      expect(brain1).to receive(:show_player_votes).with({
+      expect(brain1).to receive(:show_team_votes).with({
         player1.name => true, player2.name => false})
       subject
     end
   end
 
-  context '#show_mission_plays' do
-    subject { api.show_mission_plays({true => [true], false => [false]}) }
+  context '#show_mission_votes' do
+    subject { api.show_mission_votes({true => [true], false => [false]}) }
     it 'passes an array of votes' do
-      expect(brain1).to receive(:show_mission_plays).with([true, false])
+      expect(brain1).to receive(:show_mission_votes).with([true, false])
       subject
     end
   end

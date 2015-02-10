@@ -19,26 +19,26 @@ describe Player do
     end
   end
 
-  describe '#show_player_votes' do
-    subject { player1.show_player_votes(player2 => true)}
+  describe '#show_team_votes' do
+    subject { player1.show_team_votes(player2 => true)}
     it 'passes a hash of players to votes to the PlayerToBrainApi' do
-      expect(player_api).to receive(:show_player_votes).with({player2 => true})
+      expect(player_api).to receive(:show_team_votes).with({player2 => true})
       subject
     end
   end
 
-  describe '#show_mission_plays' do
-    subject { player1.show_mission_plays({true => [true]})}
+  describe '#show_mission_votes' do
+    subject { player1.show_mission_votes({true => [true]})}
     it 'passes a hash of players to votes to the PlayerToBrainApi' do
-      expect(player_api).to receive(:show_mission_plays).with({true => [true]})
+      expect(player_api).to receive(:show_mission_votes).with({true => [true]})
       subject
     end
   end
 
-  describe '#vote' do
-    subject { player1.vote([player1, player2])}
+  describe '#accept_team?' do
+    subject { player1.accept_team?([player1, player2])}
     it 'passes the team to the PlayerToBrainApi' do
-      expect(player_api).to receive(:vote).with([player1, player2])
+      expect(player_api).to receive(:accept_team?).with([player1, player2])
       subject
     end
   end
