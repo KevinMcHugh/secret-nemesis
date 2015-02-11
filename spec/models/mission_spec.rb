@@ -11,8 +11,9 @@ describe Mission do
   let(:player4) { Player.new(brain2, 'resistance', player3)}
   let(:player5) { Player.new(brain2, 'resistance', player4)}
 
+  let(:listener) { double('listener', notify: nil)}
   let(:players) { [player1, player2, player3, player4, player5]}
-  subject { described_class.new(player1, players, 1) }
+  subject { described_class.new(listener, player1, players, 1) }
   describe '#initialize' do
     it 'accepts a leader, players and mission number' do
       expect(subject.leader).to eql(player1)

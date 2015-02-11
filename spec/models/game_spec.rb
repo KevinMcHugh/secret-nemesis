@@ -64,9 +64,9 @@ describe Game do
 
     it 'creates new missions with the correct leader' do
       expect(mission).to receive(:leader).and_return(double(next_player: player2), double(next_player: player3))
-      expect(Mission).to receive(:new).ordered.with(player1, anything, 1).and_return(mission)
-      expect(Mission).to receive(:new).ordered.with(player2, anything, 2).and_return(mission)
-      expect(Mission).to receive(:new).ordered.with(player3, anything, 3).and_return(mission)
+      expect(Mission).to receive(:new).ordered.with(subject, player1, anything, 1).and_return(mission)
+      expect(Mission).to receive(:new).ordered.with(subject, player2, anything, 2).and_return(mission)
+      expect(Mission).to receive(:new).ordered.with(subject, player3, anything, 3).and_return(mission)
       subject.play
     end
 

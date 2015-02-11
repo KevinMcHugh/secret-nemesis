@@ -1,5 +1,5 @@
 class Game
-  attr_reader :players, :random, :seed, :spy_wins, :resistance_wins, :winning_team
+  attr_reader :players, :random, :seed, :spy_wins, :resistance_wins, :winning_team, :events
   def initialize(brain_classes, seed=nil)
     @seed = seed ? seed : Random.new.seed #this is just for deterministic testing
     @random = Random.new(@seed)
@@ -17,7 +17,6 @@ class Game
     while !winning_team
       mission = mission(leader, mission_number)
       mission.play
-      puts "Mission #{mission_number} won by #{mission.winning_team}"
       mission_number += 1
       if mission.game_over?
         @winning_team = 'spy'
@@ -31,7 +30,7 @@ class Game
         set_winner
       end
     end
-    puts "Game won by #{winning_team}"
+    GameOverEvent.new(self, winning_team)
   end
 
   def self.all_roles
@@ -71,7 +70,7 @@ class Game
   end
 
   def mission(leader, mission_number)
-    Mission.new(leader, players, mission_number)
+    Mission.new(self, leader, players, mission_number)
   end
 
   def set_winner

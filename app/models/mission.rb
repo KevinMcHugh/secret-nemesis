@@ -1,9 +1,10 @@
 class Mission
 
-  attr_reader :leader, :players, :mission_number, :game_over, :winning_team
+  attr_reader :event_listener, :leader, :players, :mission_number, :game_over, :winning_team
   alias_method :game_over?, :game_over
 
-  def initialize(leader, players, mission_number)
+  def initialize(event_listener, leader, players, mission_number)
+    @event_listener = event_listener
     @leader         = leader
     @players        = players
     @mission_number = mission_number
@@ -11,13 +12,12 @@ class Mission
   end
 
   def play
+    MissionStartedEvent.new(event_listener, mission_number)
     votes_failed = 0
     # TODO: team size
     team = leader.pick_team(team_members)
+    TeamProposedEvent.new(event_listener, mission_number, leader, team, votes_failed + 1)
     vote_passes = vote(team)
-    puts "  Starting mission #{mission_number}"
-    puts "  #{leader.to_s} has chosen #{team}"
-    puts "    and the vote #{vote_passes ? 'passes' : 'failed'}"
     while !vote_passes
       votes_failed += 1
       if votes_failed == 5
@@ -27,9 +27,8 @@ class Mission
       end
       @leader = leader.next_player
       team = leader.pick_team(team_members)
+      TeamProposedEvent.new(event_listener, mission_number, leader, team, votes_failed + 1)
       vote_passes = vote(team)
-      puts "  #{leader.to_s} has chosen #{team}"
-      puts "    and the vote #{vote_passes ? 'passes' : 'failed'}"
     end
     mission(team) if vote_passes
   end
@@ -58,14 +57,16 @@ class Mission
     approve_votes    = grouped_votes[true].try(:count)  || 0
     disapprove_votes = grouped_votes[false].try(:count) || 0
     players.each { |p| p.show_team_votes(players_to_votes) }
-    approve_votes > disapprove_votes
+
+    votes_passes = approve_votes > disapprove_votes
+    VoteEvent.new(event_listener, team, players_to_votes, votes_passes)
+    votes_passes
   end
 
   def mission(team)
     votes = team.map do |p|
       p.spy? ? p.pass_mission?(team) : true
     end
-    puts "   The votes are in: #{votes}"
     players.each { |p| p.show_mission_votes(votes.group_by {|o| o })}
     if votes.include?(false)
       # TODO mission 4 in 7+ player games
@@ -74,5 +75,6 @@ class Mission
     else
       @winning_team = 'resistance'
     end
+    MissionEvent.new(event_listener, votes, winning_team, mission_number)
   end
 end
