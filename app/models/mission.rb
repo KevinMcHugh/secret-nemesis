@@ -13,24 +13,20 @@ class Mission
 
   def play
     MissionStartedEvent.new(event_listener, mission_number)
-    votes_failed = 0
-    # TODO: team size
-    team = leader.pick_team(team_members)
-    TeamProposedEvent.new(event_listener, mission_number, leader, team, votes_failed + 1)
-    vote_passes = vote(team)
+    teams_proposed = 0
+    vote_passes = false
     while !vote_passes
-      votes_failed += 1
-      if votes_failed == 5
-        @game_over = true
-        @winning_team = 'spy'
+      team = leader.pick_team(team_members)
+      teams_proposed += 1
+      TeamProposedEvent.new(event_listener, mission_number, leader, team, teams_proposed)
+      vote_passes = vote(team)
+      if stalemate?(teams_proposed, vote_passes)
+        end_game
         return
       end
       @leader = leader.next_player
-      team = leader.pick_team(team_members)
-      TeamProposedEvent.new(event_listener, mission_number, leader, team, votes_failed + 1)
-      vote_passes = vote(team)
     end
-    mission(team) if vote_passes
+    mission(team)
   end
 
   def team_members
@@ -61,6 +57,15 @@ class Mission
     votes_passes = approve_votes > disapprove_votes
     VoteEvent.new(event_listener, team, players_to_votes, votes_passes)
     votes_passes
+  end
+
+  def stalemate?(teams_proposed, vote_passes)
+    teams_proposed == 5 && !vote_passes
+  end
+
+  def end_game
+    @game_over = true
+    @winning_team = 'spy'
   end
 
   def mission(team)
