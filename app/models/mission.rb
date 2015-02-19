@@ -68,14 +68,20 @@ class Mission
     @winning_team = 'spy'
   end
 
+  def fails_needed
+    if players.length >= 7 && mission_number == 4
+      2
+    else
+      1
+    end
+  end
+
   def mission(team)
     votes = team.map do |p|
       p.spy? ? p.pass_mission?(team) : true
     end
     players.each { |p| p.show_mission_votes(votes.group_by {|o| o })}
-    if votes.include?(false)
-      # TODO mission 4 in 7+ player games
-      # TODO eventing makes printing possible :/
+    if votes.count(false) >= fails_needed
       @winning_team = 'spy'
     else
       @winning_team = 'resistance'

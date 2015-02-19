@@ -16,6 +16,7 @@ class PlayerToBrainApi
 
   def pick_team(team_members)
     names = brain.pick_team(team_members)
+    #TODO team size validation
     names.map do |name|
       @player.players.find {|player| player.name == name }
     end

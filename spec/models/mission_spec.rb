@@ -13,7 +13,8 @@ describe Mission do
 
   let(:listener) { double('listener', notify: nil)}
   let(:players) { [player1, player2, player3, player4, player5]}
-  subject { described_class.new(listener, player1, players, 1) }
+  let(:mission_number) { 1 }
+  subject { described_class.new(listener, player1, players, mission_number) }
   describe '#initialize' do
     it 'accepts a leader, players and mission number' do
       expect(subject.leader).to eql(player1)
@@ -87,10 +88,54 @@ describe Mission do
       end
 
       context 'the spies fail the mission' do
+        before { allow(player1).to receive(:pass_mission?).and_return(false) }
+
         it 'sets the winning team to spy' do
-          expect(player1).to receive(:pass_mission?).and_return(false)
           subject.play
           expect(subject.winning_team).to eq('spy')
+        end
+        context 'with fewer than 7 players' do
+          context 'when the mission is number 4' do
+            let(:mission_number) { 4 }
+            it 'only requires one fail to fail' do
+              subject.play
+              expect(subject.winning_team).to eq('spy')
+            end
+          end
+        end
+
+        context 'with at least 7 players' do
+          let(:player6) { Player.new(brain2, 'resistance', player5)}
+          let(:player7) { Player.new(brain1, 'spy',        player6)}
+          let(:players) { [player1, player2, player3, player4, player5, player6, player7]}
+
+          before do
+            allow(player6).to receive(:accept_team?).with(players).and_return(true)
+            allow(player7).to receive(:accept_team?).with(players).and_return(false)
+            allow(player7).to receive(:pass_mission?).and_return(true)
+          end
+          context 'when the mission is not number 4' do
+            it 'takes one to fail' do
+              subject.play
+              expect(subject.winning_team).to eq('spy')
+            end
+          end
+          context 'when the mission is number 4' do
+            let(:mission_number) { 4 }
+            context 'with 1 fail' do
+              it 'the resistance wins' do
+                subject.play
+                expect(subject.winning_team).to eq('resistance')
+              end
+            end
+            context 'with 2 fails' do
+              before { allow(player7).to receive(:pass_mission?).and_return(false) }
+              it 'the spies win' do
+                subject.play
+                expect(subject.winning_team).to eq('spy')
+              end
+            end
+          end
         end
       end
     end
