@@ -39,11 +39,15 @@ class Player
     @players
   end
 
-  delegate :accept_team?, to: :player_api
-  delegate :pick_team, to: :player_api
-  delegate :show_team_votes, to: :player_api
-  delegate :pass_mission?, to: :player_api
-  delegate :show_mission_votes, to: :player_api
+  delegate :accept_team?,                    to: :player_api
+  delegate :pick_team,                       to: :player_api
+  delegate :show_team_votes,                 to: :player_api
+  delegate :pass_mission?,                   to: :player_api
+  delegate :show_mission_votes,              to: :player_api
+  delegate :current_mission_number=,         to: :player_api
+  delegate :current_leader=,                 to: :player_api
+  delegate :current_number_of_fails_needed=, to: :player_api
+  delegate :add_mission_winner,              to: :player_api
 
   def ==(other)
     brain == other.brain && role == other.role

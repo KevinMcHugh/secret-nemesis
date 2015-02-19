@@ -82,4 +82,45 @@ describe PlayerToBrainApi do
       expect(subject).to eql(player1.name)
     end
   end
+
+  context '#current_mission_number' do
+    subject { api.current_mission_number }
+    it 'returns the current mission number' do
+      api.current_mission_number = 1
+      expect(subject).to eql(1)
+    end
+  end
+
+  context '#current_team' do
+    subject { api.current_team }
+    it 'returns the names of the current team' do
+      api.current_team = [player1, player2]
+      expect(subject).to eql([player1.name, player2.name])
+    end
+  end
+
+  context '#current_leader' do
+    subject { api.current_leader }
+    it 'returns the names of the current leader' do
+      api.current_leader = player2
+      expect(subject).to eql(player2.name)
+    end
+  end
+
+  context '#current_number_of_fails_needed' do
+    subject { api.current_number_of_fails_needed }
+    it 'returns the current number of fails needed' do
+      api.current_number_of_fails_needed = 1
+      expect(subject).to eql(1)
+    end
+  end
+
+  context '#mission_winners' do
+    subject { api.mission_winners }
+    it 'returns the current number of fails needed' do
+      api.add_mission_winner('spy')
+      api.add_mission_winner('resistance')
+      expect(subject).to eql(['spy', 'resistance'])
+    end
+  end
 end

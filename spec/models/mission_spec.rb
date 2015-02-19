@@ -79,6 +79,17 @@ describe Mission do
         subject.play
       end
 
+      it 'tells players useful information' do
+        players.each do |player|
+          expect(player).to receive(:current_mission_number=).with(mission_number)
+          expect(player).to receive(:current_leader=).with(player1)
+          expect(player).to receive(:current_leader=).with(player2)
+          expect(player).to receive(:current_number_of_fails_needed=).with(1)
+          expect(player).to receive(:add_mission_winner).with('spy')
+        end
+        subject.play
+      end
+
       context 'the spies pass the mission' do
         it 'sets the winning team to resistance' do
           expect(player1).to receive(:pass_mission?).and_return(true)
