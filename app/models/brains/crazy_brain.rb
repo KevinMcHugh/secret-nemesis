@@ -29,6 +29,12 @@ class CrazyBrain < Brain
     # players_to_votes is a hash with players as keys and
     # votes as values. { player1 => true}.
     # Return value is unused.
+    api.name
+    api.current_team
+    api.current_leader
+    api.current_mission_number
+    api.current_number_of_fails_needed
+    api.mission_winners
   end
 
   def show_mission_votes(players_to_votes)

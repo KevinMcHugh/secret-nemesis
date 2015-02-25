@@ -5,11 +5,12 @@ describe Mission do
     pass_mission?: false, show_mission_votes: nil, :api= => nil)}
   let(:brain2) { double('brain2', show_team_votes: nil,
     pass_mission?: false, show_mission_votes: nil, accept_team?: nil, :api= => nil)}
-  let(:player1) { Player.new(brain1, 'spy', nil)}
-  let(:player2) { Player.new(brain2, 'resistance', player1)}
-  let(:player3) { Player.new(brain2, 'resistance', player2)}
-  let(:player4) { Player.new(brain2, 'resistance', player3)}
-  let(:player5) { Player.new(brain2, 'resistance', player4)}
+  let(:game)    { double('Game') }
+  let(:player1) { Player.new(game, brain1, 'spy', nil)}
+  let(:player2) { Player.new(game, brain2, 'resistance', player1)}
+  let(:player3) { Player.new(game, brain2, 'resistance', player2)}
+  let(:player4) { Player.new(game, brain2, 'resistance', player3)}
+  let(:player5) { Player.new(game, brain2, 'resistance', player4)}
 
   let(:listener) { double('listener', notify: nil)}
   let(:players) { [player1, player2, player3, player4, player5]}
@@ -79,17 +80,6 @@ describe Mission do
         subject.play
       end
 
-      it 'tells players useful information' do
-        players.each do |player|
-          expect(player).to receive(:current_mission_number=).with(mission_number)
-          expect(player).to receive(:current_leader=).with(player1)
-          expect(player).to receive(:current_leader=).with(player2)
-          expect(player).to receive(:current_number_of_fails_needed=).with(1)
-          expect(player).to receive(:add_mission_winner).with('spy')
-        end
-        subject.play
-      end
-
       context 'the spies pass the mission' do
         it 'sets the winning team to resistance' do
           expect(player1).to receive(:pass_mission?).and_return(true)
@@ -116,8 +106,8 @@ describe Mission do
         end
 
         context 'with at least 7 players' do
-          let(:player6) { Player.new(brain2, 'resistance', player5)}
-          let(:player7) { Player.new(brain1, 'spy',        player6)}
+          let(:player6) { Player.new(game, brain2, 'resistance', player5)}
+          let(:player7) { Player.new(game, brain1, 'spy',        player6)}
           let(:players) { [player1, player2, player3, player4, player5, player6, player7]}
 
           before do

@@ -3,8 +3,10 @@ require 'spec_helper'
 describe Player do
   let(:brain1)     { double('brain1', :api= => nil) }
   let(:brain2)     { double('brain2', :api= => nil) }
-  let(:player1)    { Player.new(brain1, 'spy', nil)}
-  let(:player2)    { Player.new(brain2, 'resistance', player1)}
+  let(:mission)    { double('Mission') }
+  let(:game)       { double('Game', current_mission: mission) }
+  let(:player1)    { Player.new(game, brain1, 'spy', nil)}
+  let(:player2)    { Player.new(game, brain2, 'resistance', player1)}
   let(:player_api) { double('PlayerToBrainApi') }
 
   before do
@@ -79,6 +81,20 @@ describe Player do
     subject { player1.players}
     it 'returns all players' do
       expect(subject).to eql([player1, player2])
+    end
+  end
+
+  describe '#current_mission' do
+    subject { player1.current_mission }
+    it 'returns the current mission of the game' do
+      expect(subject).to eql(mission)
+    end
+  end
+
+  describe '#current_mission' do
+    subject { player1.current_mission }
+    it 'returns the current mission of the game' do
+      expect(subject).to eql(mission)
     end
   end
 end

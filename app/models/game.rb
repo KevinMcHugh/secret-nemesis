@@ -1,5 +1,6 @@
 class Game
-  attr_reader :players, :random, :seed, :spy_wins, :resistance_wins, :winning_team, :events
+  attr_reader :players, :random, :seed, :spy_wins,
+   :resistance_wins, :winning_team, :events, :current_mission
   def initialize(brain_classes, seed=nil)
     @seed = seed ? seed : Random.new.seed #this is just for deterministic testing
     @random = Random.new(@seed)
@@ -15,16 +16,17 @@ class Game
     leader = @players.first
     mission_number = 1
     while !winning_team
-      mission = mission(leader, mission_number)
-      mission.play
+      @current_mission = mission(leader, mission_number)
+
+      current_mission.play
       mission_number += 1
-      if mission.game_over?
+      if current_mission.game_over?
         @winning_team = 'spy'
       else
-        leader = mission.leader.next_player
-        if mission.winning_team == 'spy'
+        leader = current_mission.leader.next_player
+        if current_mission.winning_team == 'spy'
           @spy_wins += 1
-        elsif mission.winning_team == 'resistance'
+        elsif current_mission.winning_team == 'resistance'
           @resistance_wins += 1
         end
         set_winner
@@ -48,7 +50,7 @@ class Game
     roles = roles_for(brain_classes.length)
     @players = brain_classes.each_with_index.map do |bc, i|
       role = roles[i]
-      player = Player.new(bc.new(role), role, previous_player)
+      player = Player.new(self, bc.new(role), role, previous_player)
       previous_player = player
       player
     end

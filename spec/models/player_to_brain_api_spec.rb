@@ -3,10 +3,15 @@ require 'spec_helper'
 describe PlayerToBrainApi do
   let(:brain1)     { double('brain1', :api= => nil) }
   let(:brain2)     { double('brain2', :api= => nil) }
-  let(:player1)    { Player.new(brain1, 'spy', nil)}
-  let(:player2)    { Player.new(brain2, 'resistance', player1)}
-
+  let(:player1)    { Player.new(game, brain1, 'spy', nil)}
+  let(:player2)    { Player.new(game, brain2, 'resistance', player1)}
+  let(:mission)    { double('Mission', mission_number: 1, leader: player2, number_of_fails_needed: 1, team: [player1, player2])}
+  let(:game)       { double('Game', mission_winners: ['spy', 'resistance'])}
   let(:api) {described_class.new(player1, brain1)}
+  before do
+    allow(player1).to receive(:current_mission).and_return(mission)
+    allow(player1).to receive(:game).and_return(game)
+  end
 
   context '#initialize' do
     subject { api }
@@ -86,7 +91,6 @@ describe PlayerToBrainApi do
   context '#current_mission_number' do
     subject { api.current_mission_number }
     it 'returns the current mission number' do
-      api.current_mission_number = 1
       expect(subject).to eql(1)
     end
   end
@@ -94,7 +98,6 @@ describe PlayerToBrainApi do
   context '#current_team' do
     subject { api.current_team }
     it 'returns the names of the current team' do
-      api.current_team = [player1, player2]
       expect(subject).to eql([player1.name, player2.name])
     end
   end
@@ -102,7 +105,6 @@ describe PlayerToBrainApi do
   context '#current_leader' do
     subject { api.current_leader }
     it 'returns the names of the current leader' do
-      api.current_leader = player2
       expect(subject).to eql(player2.name)
     end
   end
@@ -110,7 +112,6 @@ describe PlayerToBrainApi do
   context '#current_number_of_fails_needed' do
     subject { api.current_number_of_fails_needed }
     it 'returns the current number of fails needed' do
-      api.current_number_of_fails_needed = 1
       expect(subject).to eql(1)
     end
   end
@@ -118,8 +119,6 @@ describe PlayerToBrainApi do
   context '#mission_winners' do
     subject { api.mission_winners }
     it 'returns the current number of fails needed' do
-      api.add_mission_winner('spy')
-      api.add_mission_winner('resistance')
       expect(subject).to eql(['spy', 'resistance'])
     end
   end

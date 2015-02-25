@@ -1,8 +1,6 @@
 class PlayerToBrainApi
 
-  attr_reader :brain, :mission_winners
-  attr_accessor :current_mission_number, :current_number_of_fails_needed
-  attr_writer :current_team, :current_leader
+  attr_reader :brain
 
   def initialize(player, brain)
     @player = player
@@ -52,15 +50,23 @@ class PlayerToBrainApi
   end
 
   def current_team
-    @current_team.map(&:name)
+    @player.current_mission.team.map(&:name)
   end
 
   def current_leader
-    @current_leader.name
+    @player.current_mission.leader.name
   end
 
-  def add_mission_winner(winning_team)
-    @mission_winners << winning_team
+  def current_mission_number
+    @player.current_mission.mission_number
+  end
+
+  def current_number_of_fails_needed
+    @player.current_mission.number_of_fails_needed
+  end
+
+  def mission_winners
+    @player.game.mission_winners
   end
 
   private

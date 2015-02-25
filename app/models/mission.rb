@@ -9,11 +9,6 @@ class Mission
     @players        = players
     @mission_number = mission_number
     @game_over = false
-    players.each do |player|
-      player.current_mission_number = mission_number
-      player.current_leader = leader
-      player.current_number_of_fails_needed = fails_needed
-    end
   end
 
   def play
@@ -30,7 +25,6 @@ class Mission
         return
       end
       @leader = leader.next_player
-      players.each { |player| player.current_leader = leader }
     end
     mission(team)
   end
@@ -92,7 +86,6 @@ class Mission
       @winning_team = 'resistance'
     end
     players.each do |p|
-      p.add_mission_winner(winning_team)
       p.show_mission_votes(votes.group_by {|o| o })
     end
     MissionEvent.new(event_listener, votes, winning_team, mission_number)
