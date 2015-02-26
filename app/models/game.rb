@@ -17,19 +17,13 @@ class Game
     mission_number = 1
     while !winning_team
       @current_mission = mission(leader, mission_number)
-
       current_mission.play
       mission_number += 1
       if current_mission.game_over?
         @winning_team = 'spy'
       else
         leader = current_mission.leader.next_player
-        if current_mission.winning_team == 'spy'
-          @spy_wins += 1
-        elsif current_mission.winning_team == 'resistance'
-          @resistance_wins += 1
-        end
-        set_winner
+        set_winner(current_mission)
       end
     end
     GameOverEvent.new(self, winning_team)
@@ -75,7 +69,16 @@ class Game
     Mission.new(self, leader, players, mission_number)
   end
 
-  def set_winner
+  def set_winner(current_mission)
+    if current_mission.winning_team == 'spy'
+      @spy_wins += 1
+    elsif current_mission.winning_team == 'resistance'
+      @resistance_wins += 1
+    end
+    check_for_game_winner
+  end
+
+  def check_for_game_winner
     if spy_wins == 3
       @winning_team = 'spy'
     elsif resistance_wins == 3
