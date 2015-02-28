@@ -8,10 +8,9 @@ games = 10000.times.flat_map do |i|
   game = Game.new(brain_classes)
   game.play
   game
-
 end
 
-winners = games.map {|game| gmae.winners.map(&:role).uniq }
+winners = games.map {|game| game.winners.map(&:role).uniq }
 role_counter = Hash.new(0)
 winners.reduce(role_counter){ |h, e| h[e] += 1 ; h }
 

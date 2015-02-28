@@ -3,6 +3,22 @@ class GoodBrain < Brain
   def initialize(role)
     # You might want to copy down your role.
     @role = role
+    @team_vote_records = {}
+    @mission_votes = {}
+  end
+
+  def show_team_votes(players_to_votes)
+    # Shows the votes made on the last team voted on.
+    # players_to_votes is a hash with players as keys and
+    # votes as values. { player1 => true}.
+    # Return value is unused.
+    @team_vote_records[api.current_mission_number] ||= {}
+    mission_records = @team_vote_records[api.current_mission_number]
+    mission_records[api.current_leader] = players_to_votes
+  end
+
+  def show_mission_votes(votes)
+    @mission_votes[api.current_mission_number] = votes
   end
 
   class SpyBrain < GoodBrain
@@ -45,22 +61,6 @@ class GoodBrain < Brain
       picks
     end
 
-    def show_team_votes(players_to_votes)
-      # Shows the votes made on the last team voted on.
-      # players_to_votes is a hash with players as keys and
-      # votes as values. { player1 => true}.
-      # Return value is unused.
-      api.name
-      api.current_team
-      api.current_leader
-      api.current_mission_number
-      api.current_number_of_fails_needed
-      api.mission_winners
-    end
-
-    def show_mission_votes(players_to_votes)
-    end
-
     def pass_mission?(team)
       # Return value is true or true, indicating
       # whether or not to pass the mission.
@@ -69,6 +69,11 @@ class GoodBrain < Brain
   end
 
   class ResistanceBrain < GoodBrain
+    def initialize(role)
+      super(role)
+      @suspiscions = Hash.new { |h,k| h[k] = 0 }
+    end
+
     def accept_team?(team)
       # Return true or false. True approves
       # of the team
@@ -78,7 +83,17 @@ class GoodBrain < Brain
     def pick_team(team_members)
       # As leader, pick a team to go on a mission.
       # Return value is an array of Players.
-      api.player_names.first(team_members)
+      api.player_names.each { |name| @suspiscions[name] }
+      @suspiscions.sort_by {|k,v| v}.first(team_members).to_h.keys
+    end
+
+    def show_mission_votes(votes)
+      vote_counts = votes.each_with_object(Hash.new(0)) { |votes,counts| counts[votes] += 1 }
+      vote_counts[false].times do
+        api.current_team.each do |player|
+          @suspiscions[player] += 1 unless player == api.name
+        end
+      end
     end
   end
 end
