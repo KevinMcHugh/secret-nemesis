@@ -71,6 +71,12 @@ describe PlayerToBrainApi do
       expect(brain1).to receive(:pick_team).with(2).and_return([player1.name, player2.name])
       subject
     end
+    context 'when the brain picks too few players' do
+      it 'fails' do
+        expect(brain1).to receive(:pick_team).with(2).and_return([player1.name])
+        expect{subject}.to raise_error
+      end
+    end
   end
 
   context '#player_names' do
