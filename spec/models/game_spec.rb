@@ -17,7 +17,6 @@ describe Game do
 
   subject { game }
 
-
   describe '#initialize' do
     before do
       allow(brain_class1).to receive(:new_for).and_return(brain1, brain3)
@@ -98,6 +97,33 @@ describe Game do
       expect(Mission).to receive(:new).and_return(mission)
       game.play
       expect(subject).to eql(mission)
+    end
+  end
+
+  describe '#mission_winners' do
+    before do
+      allow(brain_class1).to receive(:new_for).and_return(brain1, brain3)
+      allow(brain_class2).to receive(:new_for).and_return(brain2, brain4)
+    end
+    subject { game.mission_winners }
+    context 'with no missions played' do
+      it 'returns an empty array' do
+        expect(subject).to eql([])
+      end
+    end
+    context 'with missions played' do
+      def mission(team)
+        double('mission', winning_team: team, play: nil, leader: player1, game_over?: false)
+      end
+      let(:spy_mission)        { mission('spy') }
+      let(:resistance_mission) { mission('resistance') }
+      it 'returns the name of the winning teams, in order' do
+        expect(Mission).to receive(:new).and_return(spy_mission, resistance_mission, spy_mission, spy_mission)
+        allow(brain2).to receive(:open_eyes)
+        allow(brain3).to receive(:open_eyes)
+        game.play
+        expect(subject).to match_array(['spy', 'resistance', 'spy', 'spy'])
+      end
     end
   end
 end
