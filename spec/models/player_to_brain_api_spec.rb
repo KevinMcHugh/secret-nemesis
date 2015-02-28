@@ -5,7 +5,7 @@ describe PlayerToBrainApi do
   let(:brain2)     { double('brain2', :api= => nil) }
   let(:player1)    { Player.new(game, brain1, 'spy', nil)}
   let(:player2)    { Player.new(game, brain2, 'resistance', player1)}
-  let(:mission)    { double('Mission', mission_number: 1, leader: player2, number_of_fails_needed: 1, team: [player1, player2])}
+  let(:mission)    { double('Mission', mission_number: 1, leader: player2, fails_needed: 1, team: [player1, player2])}
   let(:game)       { double('Game', mission_winners: ['spy', 'resistance'])}
   let(:api) {described_class.new(player1, brain1)}
   before do

@@ -1,6 +1,6 @@
 class Game
   attr_reader :players, :random, :seed, :spy_wins,
-   :resistance_wins, :winning_team, :events, :current_mission
+   :resistance_wins, :winning_team, :events, :current_mission, :missions
   def initialize(brain_classes, seed=nil)
     @seed = seed ? seed : Random.new.seed #this is just for deterministic testing
     @random = Random.new(@seed)
@@ -9,6 +9,7 @@ class Game
     @resistance_wins = 0
     @winning_team    = nil
     @events          = []
+    @missions        = []
   end
 
   def play
@@ -17,6 +18,7 @@ class Game
     mission_number = 1
     while !winning_team
       @current_mission = mission(leader, mission_number)
+      @missions << current_mission
       current_mission.play
       mission_number += 1
       if current_mission.game_over?
@@ -36,6 +38,10 @@ class Game
 
   def notify(event)
     @events << event
+  end
+
+  def mission_winners
+    @missions.map(&:winning_team)
   end
 
   private

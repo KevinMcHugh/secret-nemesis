@@ -1,6 +1,6 @@
 class Mission
 
-  attr_reader :event_listener, :leader, :players, :mission_number, :game_over, :winning_team
+  attr_reader :event_listener, :leader, :players, :mission_number, :game_over, :winning_team, :team
   alias_method :game_over?, :game_over
 
   def initialize(event_listener, leader, players, mission_number)
@@ -8,7 +8,8 @@ class Mission
     @leader         = leader
     @players        = players
     @mission_number = mission_number
-    @game_over = false
+    @team           = nil
+    @game_over      = false
   end
 
   def play
@@ -16,7 +17,7 @@ class Mission
     teams_proposed = 0
     vote_passes = false
     while !vote_passes
-      team = leader.pick_team(team_members)
+      @team = leader.pick_team(team_members)
       teams_proposed += 1
       TeamProposedEvent.new(event_listener, mission_number, leader, team, teams_proposed)
       vote_passes = vote(team)
@@ -31,6 +32,14 @@ class Mission
 
   def team_members
     players_to_sizes[players.length][mission_number - 1]
+  end
+
+  def fails_needed
+    if players.length >= 7 && mission_number == 4
+      2
+    else
+      1
+    end
   end
 
   private
@@ -66,14 +75,6 @@ class Mission
   def end_game
     @game_over = true
     @winning_team = 'spy'
-  end
-
-  def fails_needed
-    if players.length >= 7 && mission_number == 4
-      2
-    else
-      1
-    end
   end
 
   def mission(team)

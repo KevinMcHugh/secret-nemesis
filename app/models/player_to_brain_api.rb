@@ -62,7 +62,7 @@ class PlayerToBrainApi
   end
 
   def current_number_of_fails_needed
-    @player.current_mission.number_of_fails_needed
+    @player.current_mission.fails_needed
   end
 
   def mission_winners
