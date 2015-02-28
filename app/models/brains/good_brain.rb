@@ -64,11 +64,7 @@ class GoodBrain < Brain
     def pass_mission?(team)
       # Return value is true or true, indicating
       # whether or not to pass the mission.
-      heh_heh_heh_heh
-    end
-
-    def heh_heh_heh_heh
-      [true, false].sample
+      false
     end
   end
 
