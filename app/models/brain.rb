@@ -1,9 +1,15 @@
 # Demonstrates all the methods you need to
 # implement in your brain.
 class Brain
+  def self.spy_class; self::SpyBrain; end
+  def self.resistance_class; self::ResistanceBrain; end
+
+  def self.new_for(role)
+    klass = role == 'spy' ? spy_class : resistance_class
+    klass.new(role)
+  end
 
   attr_accessor :api
-
   def initialize(role)
     # You might want to copy down your role.
   end

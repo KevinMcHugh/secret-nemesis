@@ -17,17 +17,20 @@ describe Game do
 
   subject { game }
 
+
   describe '#initialize' do
+    before do
+      allow(brain_class1).to receive(:new_for).and_return(brain1, brain3)
+      allow(brain_class2).to receive(:new_for).and_return(brain2, brain4)
+    end
     it 'creates new players' do
-      expect(brain_class1).to receive(:new).and_return(brain1, brain3)
-      expect(brain_class2).to receive(:new).and_return(brain2, brain4)
+      expect(brain_class1).to receive(:new_for).and_return(brain1, brain3)
+      expect(brain_class2).to receive(:new_for).and_return(brain2, brain4)
       expect(subject.players.first).to eq(player1)
       expect(subject.players.second).to eq(player2)
     end
 
     it 'sets the players up in order' do
-      allow(brain_class1).to receive(:new).and_return(brain1, brain3)
-      allow(brain_class2).to receive(:new).and_return(brain2, brain4)
       subject
       expect(subject.players.first.next_player).to eql(subject.players.second)
       expect(subject.players.second.next_player).to eql(subject.players.third)
@@ -41,12 +44,14 @@ describe Game do
   end
 
   describe '#play' do
+    before do
+      allow(brain_class1).to receive(:new_for).and_return(brain1, brain3)
+      allow(brain_class2).to receive(:new_for).and_return(brain2, brain4)
+    end
     let(:mission) { double('Mission', winning_team: 'spy', play: nil,
       leader: double(next_player: player2), game_over?: false)}
 
     before do
-      allow(brain_class1).to receive(:new).and_return(brain1, brain3)
-      allow(brain_class2).to receive(:new).and_return(brain2, brain4)
       allow(subject.players.second).to receive(:open_eyes).with([player2, player3])
       allow(subject.players.third).to receive(:open_eyes).with([player2, player3])
       allow(Mission).to receive(:new).exactly(3).times.and_return(mission)
