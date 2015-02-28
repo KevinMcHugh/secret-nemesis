@@ -44,6 +44,12 @@ class Game
     @missions.map(&:winning_team)
   end
 
+  def winners
+    if winning_team
+      winning_team == 'spy' ? spies : players.find_all { |p| !p.spy? }
+    end
+  end
+
   private
   def set_up_players(brain_classes)
     previous_player = nil

@@ -16,6 +16,13 @@ describe Game do
   let(:brains) { [brain_class1, brain_class2, brain_class1, brain_class2]}
 
   subject { game }
+  before do
+    allow(brain_class1).to receive(:new_for).and_return(brain1, brain3)
+    allow(brain_class2).to receive(:new_for).and_return(brain2, brain4)
+    allow(brain2).to receive(:open_eyes)
+    allow(brain3).to receive(:open_eyes)
+    allow(brain4).to receive(:open_eyes)
+  end
 
   describe '#initialize' do
     before do
@@ -43,10 +50,6 @@ describe Game do
   end
 
   describe '#play' do
-    before do
-      allow(brain_class1).to receive(:new_for).and_return(brain1, brain3)
-      allow(brain_class2).to receive(:new_for).and_return(brain2, brain4)
-    end
     let(:mission) { double('Mission', winning_team: 'spy', play: nil,
       leader: double(next_player: player2), game_over?: false)}
 
@@ -100,11 +103,12 @@ describe Game do
     end
   end
 
+  def mission(team)
+    double('mission', winning_team: team, play: nil, leader: player1, game_over?: false)
+  end
+  let(:spy_mission)        { mission('spy') }
+  let(:resistance_mission) { mission('resistance') }
   describe '#mission_winners' do
-    before do
-      allow(brain_class1).to receive(:new_for).and_return(brain1, brain3)
-      allow(brain_class2).to receive(:new_for).and_return(brain2, brain4)
-    end
     subject { game.mission_winners }
     context 'with no missions played' do
       it 'returns an empty array' do
@@ -112,17 +116,26 @@ describe Game do
       end
     end
     context 'with missions played' do
-      def mission(team)
-        double('mission', winning_team: team, play: nil, leader: player1, game_over?: false)
-      end
-      let(:spy_mission)        { mission('spy') }
-      let(:resistance_mission) { mission('resistance') }
       it 'returns the name of the winning teams, in order' do
         expect(Mission).to receive(:new).and_return(spy_mission, resistance_mission, spy_mission, spy_mission)
-        allow(brain2).to receive(:open_eyes)
-        allow(brain3).to receive(:open_eyes)
         game.play
         expect(subject).to match_array(['spy', 'resistance', 'spy', 'spy'])
+      end
+    end
+  end
+
+  describe '#winners' do
+    subject { game.winners }
+    context 'when the game is not over' do
+      it 'returns nil' do
+        expect(subject).to be_nil
+      end
+    end
+    context 'when the game is over' do
+      it 'returns the winning players' do
+        expect(Mission).to receive(:new).and_return(spy_mission, spy_mission, spy_mission)
+        game.play
+        expect(subject).to match_array([player2, player3])
       end
     end
   end
