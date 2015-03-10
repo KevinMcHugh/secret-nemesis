@@ -71,29 +71,53 @@ class GoodBrain < Brain
   class ResistanceBrain < GoodBrain
     def initialize(role)
       super(role)
-      @suspiscions = Hash.new { |h,k| h[k] = 0 }
+      @suspicions = Hash.new { |h,k| h[k] = 0 }
+      @current_mission_number = 0
+      @failed_team_proposals = 0
     end
 
     def accept_team?(team)
       # Return true or false. True approves
       # of the team
-      true
+      populate_suspicions
+      # binding.pry
+      if @current_mission_number == api.current_mission_number
+        @failed_team_proposals +=1
+      else
+        @current_mission_number = api.current_mission_number
+      end
+      team_suspicion = team.reduce(0) {|a, i| a += @suspicions[i]}
+      others_suspicion =  (api.player_names - team).reduce(0) {|a, i| a += @suspicions[i]}
+      if @failed_team_proposals == 4
+        true
+      else
+        team_suspicion < others_suspicion
+      end
     end
 
     def pick_team(team_members)
       # As leader, pick a team to go on a mission.
       # Return value is an array of Players.
-      api.player_names.each { |name| @suspiscions[name] }
-      @suspiscions.sort_by {|k,v| v}.first(team_members).to_h.keys
+      populate_suspicions
+      @suspicions.sort_by {|k,v| v}.first(team_members).to_h.keys
     end
 
     def show_mission_votes(votes)
-      vote_counts = votes.each_with_object(Hash.new(0)) { |votes,counts| counts[votes] += 1 }
+      vote_counts = votes.each_with_object(Hash.new(0)) { |vote,counts| counts[vote] += 1 }
       vote_counts[false].times do
         api.current_team.each do |player|
-          @suspiscions[player] += 1 unless player == api.name
+          @suspicions[player] += 1 unless player == api.name
         end
       end
+      if vote_counts[true] > 0 && vote_counts[false] == 0
+        api.current_team.each do |player|
+          @suspicions[player] -= 1 unless player == api.name
+        end
+      end
+    end
+
+    def populate_suspicions
+      api.player_names.each { |name| @suspicions[name] }
     end
   end
 end
