@@ -103,6 +103,7 @@ class GoodBrain < Brain
     end
 
     def show_mission_votes(votes)
+      super(votes)
       vote_counts = votes.each_with_object(Hash.new(0)) { |vote,counts| counts[vote] += 1 }
       vote_counts[false].times do
         api.current_team.each do |player|
@@ -113,6 +114,14 @@ class GoodBrain < Brain
         api.current_team.each do |player|
           @suspicions[player] -= 1 unless player == api.name
         end
+      end
+    end
+
+    def show_team_votes(players_to_votes)
+      populate_suspicions
+      players_to_votes.each_pair do |player, vote|
+        incorrect_vote = !api.current_team.include?(player)
+        @suspicions[player] += 1 if incorrect_vote && player != api.name
       end
     end
 
