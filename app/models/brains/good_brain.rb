@@ -74,13 +74,13 @@ class GoodBrain < Brain
       @suspicions = Hash.new { |h,k| h[k] = 0 }
       @current_mission_number = 0
       @failed_team_proposals = 0
+      @failing_members = []
     end
 
     def accept_team?(team)
       # Return true or false. True approves
       # of the team
       populate_suspicions
-      # binding.pry
       if @current_mission_number == api.current_mission_number
         @failed_team_proposals +=1
       else
@@ -107,26 +107,35 @@ class GoodBrain < Brain
       vote_counts = votes.each_with_object(Hash.new(0)) { |vote,counts| counts[vote] += 1 }
       vote_counts[false].times do
         api.current_team.each do |player|
-          @suspicions[player] += 1 unless player == api.name
+          update_suspicion(player)
         end
       end
       if vote_counts[true] > 0 && vote_counts[false] == 0
         api.current_team.each do |player|
-          @suspicions[player] -= 1 unless player == api.name
+          update_suspicion(player, -1)
         end
       end
+      # if vote_counts[false] >= api.current_number_of_fails_needed
+      #   @failing_members += api.current_team
+      #   api.current_team.each {|p| @suspicions[p] += 1 unless p == api.name }
+      # end
     end
 
     def show_team_votes(players_to_votes)
+      super(players_to_votes)
       populate_suspicions
       players_to_votes.each_pair do |player, vote|
         incorrect_vote = !api.current_team.include?(player)
-        @suspicions[player] += 1 if incorrect_vote && player != api.name
+        update_suspicion(player) if incorrect_vote
       end
     end
 
     def populate_suspicions
       api.player_names.each { |name| @suspicions[name] }
+    end
+
+    def update_suspicion(player, increment=1)
+      @suspicions[player] += increment unless player == api.name
     end
   end
 end
