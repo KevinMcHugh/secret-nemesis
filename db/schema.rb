@@ -11,7 +11,14 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150318193917) do
+ActiveRecord::Schema.define(version: 20150323042822) do
+
+  create_table "event_records", force: :cascade do |t|
+    t.integer "game_record_id"
+    t.string  "event_type"
+    t.text    "event_json"
+    t.integer "order"
+  end
 
   create_table "game_records", force: :cascade do |t|
     t.string   "seed"

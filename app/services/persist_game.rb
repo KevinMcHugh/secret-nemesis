@@ -7,12 +7,13 @@ class PersistGame
 
   def execute
     gr = GameRecord.create(seed: game.seed)
-    game.players.each do |player|
-      PlayerRecord.create_from(player, gr)
+    game.players.each_with_index do |player, index|
+      PlayerRecord.create_from(player, gr, index)
     end
-    # game.events.each do |event|
-    #   EventRecord.create_from(event, gr)
-    # end
+    game.events.each_with_index do |event, index|
+      EventRecord.create_from(event, gr, index)
+    end
+    gr
   end
 
 end
