@@ -6,7 +6,9 @@
   game = Game.new(brain_classes)
   game.play
   game.events.each do |event|
-    puts "#{event}"
+    # puts "#{event}"
   end
+
+  PersistGame.new(game).execute
 end
 # binding.pry
