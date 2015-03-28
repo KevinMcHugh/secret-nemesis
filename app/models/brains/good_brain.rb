@@ -41,13 +41,13 @@ class GoodBrain < Brain
       picks = [api.name]
       i = 0
       spy_count = 1
-      while picks.length != number_of_team_members do
-        if i >= api.player_names.length
-          picks << (api.player_names - picks).first
+      while not_enough_picks?(picks, number_of_team_members) do
+        if iterated_too_far?(i, api.player_names.length)
+          picks << first_unpicked_player(api.player_names, picks)
         else
           player = api.player_names[i]
-          if spies.include?(player)
-            if spy_count < api.current_number_of_fails_needed
+          if player_is_a_spy?(player)
+            if more_spies_are_needed?(spy_count, api.current_number_of_fails_needed)
               picks << player
               spy_count += 1
             end
@@ -65,6 +65,26 @@ class GoodBrain < Brain
       # Return value is true or true, indicating
       # whether or not to pass the mission.
       false
+    end
+
+    def not_enough_picks?(picks, number_of_team_members)
+      picks.length != number_of_team_members
+    end
+
+    def iterated_too_far?(i, number_of_players)
+      i >= number_of_players
+    end
+
+    def first_unpicked_player(player_names, picks)
+      (player_names - picks).first
+    end
+
+    def player_is_a_spy?(player)
+      spies.include?(player)
+    end
+
+    def more_spies_are_needed?(spy_count, number_of_fails_needed)
+      spy_count < number_of_fails_needed
     end
   end
 
