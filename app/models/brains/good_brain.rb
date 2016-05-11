@@ -100,17 +100,16 @@ class GoodBrain < Brain
     def accept_team?(team)
       # Return true or false. True approves
       # of the team
-      populate_suspicions
-      if @current_mission_number == api.current_mission_number
-        @failed_team_proposals +=1
-      else
+      if @current_mission_number != api.current_mission_number
         @current_mission_number = api.current_mission_number
+        @failed_team_proposals = 0
       end
-      team_suspicion = team.reduce(0) {|a, i| a += @suspicions[i]}
-      others_suspicion =  (api.player_names - team).reduce(0) {|a, i| a += @suspicions[i]}
       if @failed_team_proposals == 4
         true
       else
+        populate_suspicions
+        team_suspicion = team.reduce(0) {|a, i| a += @suspicions[i]}
+        others_suspicion =  (api.player_names - team).reduce(0) {|a, i| a += @suspicions[i]}
         team_suspicion < others_suspicion
       end
     end
@@ -143,6 +142,7 @@ class GoodBrain < Brain
 
     def show_team_votes(players_to_votes)
       super(players_to_votes)
+      @failed_team_proposals += 1 if players_to_votes.count(false) >= players_to_votes.count(true)
       populate_suspicions
       players_to_votes.each_pair do |player, vote|
         incorrect_vote = !api.current_team.include?(player)

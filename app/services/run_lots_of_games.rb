@@ -13,8 +13,9 @@ class RunLotsOfGames
       # brain_classes += 2.times.map {VeryNegativeBrain}
       # brain_classes += 2.times.map {CrazyBrain}
       # brain_classes += 2.times.map {VeryPositiveBrain}
-      brain_classes += number_of_players.times.map {GoodBrain}
-
+      brain_classes += (number_of_players).times.map {GoodBrain}
+      # brain_classes += (number_of_players).times.map {GoodBrainWithAutono}
+#
       game = Game.new(brain_classes)
       game.play
       game
