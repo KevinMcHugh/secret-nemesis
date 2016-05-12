@@ -126,7 +126,7 @@ class GoodBrain < Brain
       vote_counts = votes.each_with_object(Hash.new(0)) { |vote,counts| counts[vote] += 1 }
       vote_counts[false].times do
         api.current_team.each do |player|
-          update_suspicion(player)
+          update_suspicion(player, 2)
         end
       end
       if vote_counts[true] > 0 && vote_counts[false] == 0
