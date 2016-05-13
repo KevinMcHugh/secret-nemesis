@@ -65,7 +65,7 @@ class GoodBrain < Brain
     def pass_mission?(team)
       # Return value is true or true, indicating
       # whether or not to pass the mission.
-      false
+      api.current_mission_number < 3
     end
 
     def not_enough_picks?(picks, number_of_team_members)
