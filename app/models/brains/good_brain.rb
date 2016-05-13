@@ -32,7 +32,8 @@ class GoodBrain < Brain
     def accept_team?(team)
       # Return true or false. True approves
       # of the team
-      (team & spies).length != api.current_number_of_fails_needed
+      # (team & spies).length != api.current_number_of_fails_needed
+      team.include?(api.name)
     end
 
     def pick_team(number_of_team_members)
