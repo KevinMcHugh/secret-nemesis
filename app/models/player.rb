@@ -51,7 +51,7 @@ class Player
     brain == other.brain && role == other.role
   end
 
-  def to_s; "#{name}|#{brain.class}|#{role}"; end
+  def to_s; "#{name}|#{role}"; end
   def inspect; to_s; end
   def as_json(options={}); {name: name, brain: brain.class.to_s, spy?: spy?}; end
 end

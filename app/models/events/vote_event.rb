@@ -8,7 +8,8 @@ class VoteEvent < Event
   end
 
   def to_s
-    "     Vote #{pass_or_fail} on #{@team}: #{@players_to_votes}"
+    "     Vote #{pass_or_fail} on #{@team}: \n" +
+      @players_to_votes.map { |player,vote| "    #{player}:#{vote}" }.join("\n")
   end
 
   def pass_or_fail

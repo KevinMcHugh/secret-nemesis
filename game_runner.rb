@@ -3,7 +3,8 @@
   brain_classes = 0.times.map {VeryNegativeBrain}
   brain_classes += 0.times.map {CrazyBrain}
   brain_classes += 0.times.map {VeryPositiveBrain}
-  brain_classes += 5.times.map {GoodBrainWithAutono}
+  # brain_classes += 10.times.map {GoodBrainWithAutono}
+  brain_classes += 7.times.map {GoodBrain}
   game = Game.new(brain_classes)
   game.play
 
