@@ -96,6 +96,7 @@ class GoodBrain < Brain
       @current_mission_number = 0
       @failed_team_proposals = 0
       @failing_members = []
+      @last_team_vote = nil
     end
 
     def accept_team?(team)
@@ -106,13 +107,15 @@ class GoodBrain < Brain
         @failed_team_proposals = 0
       end
       if @failed_team_proposals == 4
-        true
+        @last_team_vote = true
       else
         populate_suspicions
-        team_suspicion = team.reduce(0) {|a, i| a += @suspicions[i]}
-        others_suspicion =  (api.player_names - team).reduce(0) {|a, i| a += @suspicions[i]}
-        team_suspicion < others_suspicion
+        avg_team_suspicion = team.reduce(0) {|a, i| a += @suspicions[i]} / team.count
+        avg_others_suspicion =  (api.player_names - team).reduce(0) {|a, i| a += @suspicions[i]} / (api.player_names - team).count
+        @last_team_vote = avg_team_suspicion < avg_others_suspicion
       end
+      # puts "      #{api.name}: #{@suspicions}"
+      @last_team_vote
     end
 
     def pick_team(team_members)
