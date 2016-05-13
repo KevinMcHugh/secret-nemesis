@@ -6,11 +6,11 @@ describe Mission do
   let(:brain2) { double('brain2', show_team_votes: nil,
     pass_mission?: false, show_mission_votes: nil, accept_team?: nil, :api= => nil)}
   let(:game)    { double('Game') }
-  let(:player1) { Player.new(game, brain1, 'spy', nil)}
-  let(:player2) { Player.new(game, brain2, 'resistance', player1)}
-  let(:player3) { Player.new(game, brain2, 'resistance', player2)}
-  let(:player4) { Player.new(game, brain2, 'resistance', player3)}
-  let(:player5) { Player.new(game, brain2, 'resistance', player4)}
+  let(:player1) { Player.new(game, brain1, 'spy', nil, 1)}
+  let(:player2) { Player.new(game, brain2, 'resistance', player1, 2)}
+  let(:player3) { Player.new(game, brain2, 'resistance', player2, 3)}
+  let(:player4) { Player.new(game, brain2, 'resistance', player3, 4)}
+  let(:player5) { Player.new(game, brain2, 'resistance', player4, 5)}
 
   let(:listener) { double('listener', notify: nil)}
   let(:players) { [player1, player2, player3, player4, player5]}
@@ -106,8 +106,8 @@ describe Mission do
         end
 
         context 'with at least 7 players' do
-          let(:player6) { Player.new(game, brain2, 'resistance', player5)}
-          let(:player7) { Player.new(game, brain1, 'spy',        player6)}
+          let(:player6) { Player.new(game, brain2, 'resistance', player5,6)}
+          let(:player7) { Player.new(game, brain1, 'spy',        player6, 7)}
           let(:players) { [player1, player2, player3, player4, player5, player6, player7]}
 
           before do

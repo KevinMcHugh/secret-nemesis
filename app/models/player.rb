@@ -3,13 +3,12 @@ class Player
   attr_reader :brain, :role, :previous_player,
     :player_api, :name, :game
   attr_accessor :next_player
-  def initialize(game, brain, role, previous_player)
-    @game           = game
-    @brain          = brain
-    @role           = role
-    @player_api     = PlayerToBrainApi.new(self, brain)
-    @name = rand(100)
-
+  def initialize(game, brain, role, previous_player, name)
+    @game       = game
+    @brain      = brain
+    @role       = role
+    @player_api = PlayerToBrainApi.new(self, brain)
+    @name       = name
     brain.api= player_api
     self.previous_player= previous_player if previous_player
   end

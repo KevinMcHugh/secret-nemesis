@@ -9,10 +9,10 @@ describe Game do
   let(:brain2) { double('brain2', :api= => nil) }
   let(:brain3) { double('brain3', :api= => nil) }
   let(:brain4) { double('brain4', :api= => nil) }
-  let(:player1) { Player.new(game, brain1, 'resistance', nil)}
-  let(:player2) { Player.new(game, brain2, 'spy', player1)}
-  let(:player3) { Player.new(game, brain3, 'spy', player2)}
-  let(:player4) { Player.new(game, brain4, 'resistance', player3)}
+  let(:player1) { Player.new(game, brain1, 'resistance', nil, 1)}
+  let(:player2) { Player.new(game, brain2, 'spy', player1, 2)}
+  let(:player3) { Player.new(game, brain3, 'spy', player2, 3)}
+  let(:player4) { Player.new(game, brain4, 'resistance', player3, 4)}
   let(:brains) { [brain_class1, brain_class2, brain_class1, brain_class2]}
 
   subject { game }
@@ -93,7 +93,7 @@ describe Game do
     subject { game.current_mission }
     let(:brains) { [brain_class1, brain_class2, brain_class1, brain_class2, brain_class2] }
     let(:mission) { double('Mission').as_null_object }
-    let(:player5) { Player.new(game, brain4, 'resistance', player3) }
+    let(:player5) { Player.new(game, brain4, 'resistance', player3, 5) }
     let(:brain_class1) { double('BrainClass1').as_null_object }
     let(:brain_class2) { double('BrainClass2').as_null_object }
     it 'returns the mission currently being played' do

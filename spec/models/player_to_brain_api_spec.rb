@@ -3,8 +3,8 @@ require 'spec_helper'
 describe PlayerToBrainApi do
   let(:brain1)     { double('brain1', :api= => nil) }
   let(:brain2)     { double('brain2', :api= => nil) }
-  let(:player1)    { Player.new(game, brain1, 'spy', nil)}
-  let(:player2)    { Player.new(game, brain2, 'resistance', player1)}
+  let(:player1)    { Player.new(game, brain1, 'spy', nil, 1)}
+  let(:player2)    { Player.new(game, brain2, 'resistance', player1, 2)}
   let(:mission)    { double('Mission', mission_number: 1, leader: player2, fails_needed: 1, team: [player1, player2])}
   let(:game)       { double('Game', mission_winners: ['spy', 'resistance'])}
   let(:api) {described_class.new(player1, brain1)}

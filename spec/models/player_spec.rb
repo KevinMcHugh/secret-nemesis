@@ -5,8 +5,8 @@ describe Player do
   let(:brain2)     { double('brain2', :api= => nil) }
   let(:mission)    { double('Mission') }
   let(:game)       { double('Game', current_mission: mission) }
-  let(:player1)    { Player.new(game, brain1, 'spy', nil)}
-  let(:player2)    { Player.new(game, brain2, 'resistance', player1)}
+  let(:player1)    { Player.new(game, brain1, 'spy', nil, 1)}
+  let(:player2)    { Player.new(game, brain2, 'resistance', player1, 2)}
   let(:player_api) { double('PlayerToBrainApi') }
 
   before do

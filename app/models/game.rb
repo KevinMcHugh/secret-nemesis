@@ -56,7 +56,7 @@ class Game
     roles = roles_for(brain_classes.length)
     @players = brain_classes.each_with_index.map do |bc, i|
       role = roles[i]
-      player = Player.new(self, bc.new_for(role), role, previous_player)
+      player = Player.new(self, bc.new_for(role), role, previous_player, i)
       previous_player = player
       player
     end
